@@ -3,6 +3,10 @@
 #include <string.h>
 
 	
+// Comment this line to suppress print statements
+#define PRINT
+
+
 #define BUFFER_SIZE				100
 #define DELIM					"="
 

@@ -1,5 +1,6 @@
 #include "configparse.h"
 
+
 /******************************************************************************************************
  * Parses the given configuration file and fills in the values of the configuration struct
 ******************************************************************************************************/
@@ -13,12 +14,16 @@ int configParse( char* configFile ) {
         // Iterate over each line
         while( fgets(buffer, BUFFER_SIZE, fp) != NULL ) {
 			if( *buffer == '#' ) {
+                #ifdef PRINT
 				printf( "%s", buffer );
+                #endif
 			} else {
             	count += 1;
 				// Convert string to an int
 				value = (int) strtol(buffer, (char**)NULL, 10);
+                #ifdef PRINT
             	printf( "%d: %d \n",count, value );
+                #endif
 
 				// Basic implementation expects certain lines to contain the correct variables and doesn't make any check
 				if( count == 1 ) {

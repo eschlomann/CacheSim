@@ -3,6 +3,7 @@
 
 int main( int argc, char** argv ) {
 	configParse( "config" );	
-	printf( "%d \n", config.L1_block_size );
-	printf( "%d \n", config.L2_cache_size );
+
+    int tag = tagSize( config.L1_block_size, config.L1_cache_size, 8 );
+    // printf( "tag size: %d \n", tag );
 }
