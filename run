@@ -1,0 +1,6 @@
+#!/bin/bash
+echo $'\n\n\n'
+./cacheSim.exe
+echo $'\n\n\n'
+cat resultsFile
+echo $'\n'
