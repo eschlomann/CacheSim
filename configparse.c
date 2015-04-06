@@ -54,5 +54,64 @@ int configParse( char* configFile ) {
 			}
         }
     }
+    fclose(fp);
+
+    // Define the values of the arrays
+    BLOCK_SIZE[0] = config.L1_block_size;
+    BLOCK_SIZE[1] = config.L2_block_size;
+
+    CACHE_SIZE[0] = config.L1_cache_size;
+    CACHE_SIZE[1] = config.L2_cache_size;
+
+    ASSOC[0] = config.L1_assoc;
+    ASSOC[1] = config.L2_assoc;
+
+    defineAddressParameters( 0 );
+    defineAddressParameters( 1 );
+
 	return 0;
+}
+
+
+/******************************************************************************************************
+ * Calculates and sets TAG_SIZE and INDEX_SIZE arrays for given cache 
+ ******************************************************************************************************/
+void defineAddressParameters( cache_TypeDef cache ) {
+    // Calculate number of blocks in the cache
+    int numBlocks = CACHE_SIZE[cache] / BLOCK_SIZE[cache];
+    #ifdef PRINT
+    printf( "Blocks in cache %d: %d \n", cache, numBlocks );
+    #endif
+
+    // Calculate number of bits used for the index (ignoring associativity)
+    int bitsIndex = log(numBlocks) / log(2);
+    #ifdef PRINT
+    printf( "Number of index bits (%d): %d \n", cache, bitsIndex );
+    #endif
+
+    // Adjust for associativity
+    int bitsAssociative = log(ASSOC[cache]) / log(2);
+    bitsIndex = bitsIndex - bitsAssociative;
+    #ifdef PRINT
+    printf( "Number of associative bits (%d): %d \n", cache, bitsAssociative );
+    printf( "Adjusted number of index bits (%d): %d \n", cache, bitsIndex );
+    #endif
+
+    // Calculate number of bits used to address each byte in the block
+    int bitsBytes = log(BLOCK_SIZE[cache]) / log(2);
+    #ifdef PRINT
+    printf( "Number of byte bits (%d): %d \n", cache, bitsBytes );
+    #endif
+    
+    // Size of the address string
+    int numAddress = 48;
+
+    // Calculate how many bits are left over from the address
+    int bitsTag = numAddress - bitsIndex - bitsBytes;
+    #ifdef PRINT
+    printf( "Number of tag bits (%d): %d \n", cache, bitsTag );
+    #endif
+
+    TAG_SIZE[cache] = bitsTag;
+    INDEX_SIZE[cache] = bitsIndex;
 }

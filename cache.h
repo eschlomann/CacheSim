@@ -3,22 +3,20 @@
 
 #include <stdio.h>
 #include <stdbool.h>
-#include <math.h>
 #include "configparse.h"
 
 
 // Comment this line to suppress print statements
 #define PRINT
 
-
 #define TRUE                    1
 #define FALSE                   0
 
 
 /******************************************************************************************************
- * Calculate the tag size based on the given parameters
+ * Struct to represent the address as a tag and an index
  ******************************************************************************************************/
-int tagSize( int blockSize, int cacheSize, int assoc );
+struct address convertAddress( unsigned long long addr ); 
 
 
 /******************************************************************************************************

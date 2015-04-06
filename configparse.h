@@ -4,17 +4,38 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 	
 // Comment this line to suppress print statements
 #define PRINT
 
-
 #define BUFFER_SIZE				100
 #define DELIM					"="
 
 
-// Struct used to access cache parameters
+// Defines L1 and L2 parameters
+typedef enum {
+    L1 = 0,
+    L2 = 1
+} cache_TypeDef;
+
+
+/******************************************************************************************************
+ * Parses the given configuration file and fills in the values of the configuration struct
+******************************************************************************************************/
+int configParse( char* ); 
+
+
+/******************************************************************************************************
+ * Calculates and sets TAG_SIZE and INDEX_SIZE arrays for given cache 
+ ******************************************************************************************************/
+void defineAddressParameters( cache_TypeDef );
+
+
+/******************************************************************************************************
+ * Struct used to access cache parameters
+******************************************************************************************************/
 struct configuration {
 	// L1 parameters
 	int L1_block_size;
@@ -35,6 +56,9 @@ struct configuration {
 struct configuration config;
 
 
+/******************************************************************************************************
+ * Arrays used to index the configuration parameters using a single cache parameter
+******************************************************************************************************/
 int BLOCK_SIZE[2];
 int CACHE_SIZE[2];
 int ASSOC[2];
