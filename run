@@ -1,7 +1,23 @@
 #!/bin/bash
+make clean
 make
-echo $'\n\n\n'
-./cacheSim.exe
-echo $'\n\n\n'
-cat resultsFile
-echo $'\n'
+TRACE="traces/traces-short/tr1"
+if [ -z "$1" ]
+    then
+        echo "No argument supplied\ndefault is default\nSyntax is run <trace path> <config path> <output file path>\n"
+        exit 1
+fi
+if [$1 -eq "default"]
+    then
+        gunzip -c $TRACE | ./cacheSim.exe
+        echo $'\n\n\n'
+        cat resultsFile.results
+        echo $'\n'
+        exit 0
+else  
+    gunzip -c $1 | ./cacheSim.exe $2 $3
+    echo $'\n\n\n'
+    cat $3
+    echo $'\n'
+    exit 0
+fi

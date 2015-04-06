@@ -22,5 +22,9 @@ int main( int argc, char** argv ) {
 	}
 
 	runResults.config = config;
-	printResults( "resultsFile" );	
+	if ( argc < 3) {
+		printResults( "resultsFile.results" );
+	} else {
+		printResults( argv[2] );
+	}
 }
