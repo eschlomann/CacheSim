@@ -1,4 +1,5 @@
 #!/bin/bash
+make
 echo $'\n\n\n'
 ./cacheSim.exe
 echo $'\n\n\n'

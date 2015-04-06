@@ -110,6 +110,7 @@ struct results {
 	unsigned int l2_flushKickouts;
 	unsigned int l1_cost;
 	unsigned int l2_cost;
+	unsigned int mem_cost;
 	unsigned int flushes;
 	unsigned int invalidates;
 };

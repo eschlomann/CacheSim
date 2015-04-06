@@ -2,7 +2,8 @@
 
 int printResults ( char* resultsFile ) {
 	FILE * fp;
-	fp = fopen( resultsFile , "w");	
+	fp = fopen( resultsFile , "w");
+	fprintf(fp,"----------------------------------------------------------------------\n                          Simulation Results                          \n----------------------------------------------------------------------\n\n");
 	fprintf(fp,"Memory system:\n  Dcache size = %i : ways = %i : block size = %i \n  Lcache size = %i : ways = %i : block size = %i \n  L2-cache size = %i : ways = %i : block size = %i \n  Memory ready time = %i : chunksize = %i : chunktime = %i",
 		runResults.config.L1_cache_size,
 		runResults.config.L1_assoc,
@@ -48,6 +49,60 @@ int printResults ( char* resultsFile ) {
 		(float)runResults.numReadCycles / (float)runResults.numReads,
 		(float)runResults.numWriteCycles / (float)runResults.numWrites,
 		(float)runResults.numInstCycles / (float)runResults.numInst
+	);
+	//NO idea what these guys are
+	fprintf(fp, "\nIdeal: Exec. Time = %i; CPI = %.1f\nIdeal mis-aligned: Exec. Time = %i; CPI = %.1f", 
+		0,
+		0.0,
+		0,
+		0.0
+	);
+	int l1i_total = runResults.l1i_hit + runResults.l1i_miss;
+	fprintf(fp, "\n\nMemory Level:  L1i\n  Hit Count = %i  Miss Count = %i\n  Total Requests = %i\n  Hit Rate = %4.1f%%  Miss Rate = %4.1f%%\n  Kickouts = %i;  Dirty Kickouts = %i;  Transfers = %i\n  Flush Kickouts = %i", 
+		runResults.l1i_hit,
+		runResults.l1i_miss,
+		l1i_total,
+		((float)runResults.l1i_hit/(float)l1i_total)*100,
+		((float)runResults.l1i_miss/(float)l1i_total)*100,
+		runResults.l1i_kickouts,
+		runResults.l1i_dirtyKickouts,
+		runResults.l1i_transfers,
+		runResults.l1i_flushKickouts
+	);
+	int l1d_total = runResults.l1d_hit + runResults.l1d_miss;
+	fprintf(fp, "\n\nMemory Level:  L1d\n  Hit Count = %i  Miss Count = %i\n  Total Requests = %i\n  Hit Rate = %4.1f%%  Miss Rate = %4.1f%%\n  Kickouts = %i;  Dirty Kickouts = %i;  Transfers = %i\n  Flush Kickouts = %i", 
+		runResults.l1d_hit,
+		runResults.l1d_miss,
+		l1d_total,
+		((float)runResults.l1d_hit/(float)l1d_total)*100,
+		((float)runResults.l1d_miss/(float)l1d_total)*100,
+		runResults.l1d_kickouts,
+		runResults.l1d_dirtyKickouts,
+		runResults.l1d_transfers,
+		runResults.l1d_flushKickouts
+	);
+	int l2_total = runResults.l2_hit + runResults.l2_miss;
+	fprintf(fp, "\n\nMemory Level:  L2\n  Hit Count = %i  Miss Count = %i\n  Total Requests = %i\n  Hit Rate = %4.1f%%  Miss Rate = %4.1f%%\n  Kickouts = %i;  Dirty Kickouts = %i;  Transfers = %i\n  Flush Kickouts = %i", 
+		runResults.l2_hit,
+		runResults.l2_miss,
+		l2_total,
+		((float)runResults.l2_hit/(float)l2_total)*100,
+		((float)runResults.l2_miss/(float)l2_total)*100,
+		runResults.l2_kickouts,
+		runResults.l2_dirtyKickouts,
+		runResults.l2_transfers,
+		runResults.l2_flushKickouts
+	);
+	//Need more here, cost calculations + memory cost
+	fprintf(fp, "\n\nL1 cache cost (Icache $%i) + (Dcache $%i) = $%i\nL2 cache cost = $%i;  Memory cost = $%i; Total cost = $%i\nFlushes = %i  :  Invalidates = %i", 
+		runResults.l1_cost / 2,
+		runResults.l1_cost / 2,
+		runResults.l1_cost,
+		runResults.l2_cost,
+		runResults.mem_cost,
+		(runResults.l1_cost + runResults.l2_cost + runResults.mem_cost),
+		runResults.flushes,
+		runResults.invalidates
 	);
 
 
