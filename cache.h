@@ -34,7 +34,7 @@ struct cacheBlock {
  * Struct to represent the information provided by the program trace
  ******************************************************************************************************/
 struct reference {
-    char* type;                             // I, R, W (Instruction, Read Data, Write Data)
+    char type;                              // I, R, W (Instruction, Read Data, Write Data)
     unsigned long long address;             // 48 bits
     unsigned long long L1_tag;              // up to 48 bits
     int L1_index;                           // up to 10 bits

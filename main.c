@@ -15,6 +15,12 @@ int main( int argc, char** argv ) {
 	} else {
 		configParse( argv[1] );
 	}
+	struct reference ref;
+	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
+		printf("%c %llx %d\n",ref.type,ref.address,ref.numBytes);
+
+	}
+
 	runResults.config = config;
 	printResults( "resultsFile" );	
 }
