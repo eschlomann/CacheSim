@@ -1,3 +1,6 @@
+#ifndef CONFIGPARSE_H
+#define CONFIGPARSE_H
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -30,3 +33,12 @@ struct configuration {
 };
 
 struct configuration config;
+
+
+int BLOCK_SIZE[2];
+int CACHE_SIZE[2];
+int ASSOC[2];
+int TAG_SIZE[2];
+int INDEX_SIZE[2];
+
+#endif // CONFIGPARSE_H
