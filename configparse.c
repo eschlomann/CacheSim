@@ -114,4 +114,20 @@ void defineAddressParameters( cache_TypeDef cache ) {
 
     TAG_SIZE[cache] = bitsTag;
     INDEX_SIZE[cache] = bitsIndex;
+
+    // Create bit mask to get index
+    #ifdef PRINT
+    printf( "Index Length: %d \n",INDEX_SIZE[cache] );
+    #endif
+    int i;
+    unsigned long long mask = 0;
+    unsigned long long tempMask = 0;
+    for( i = 0; i < bitsIndex; i++ ) {
+        tempMask = 1 << i;
+        mask = (mask | tempMask);
+        #ifdef PRINT
+        printf( "Mask: %lld \n",mask );
+        #endif
+    }
+    INDEX_MASK[cache] = mask;
 }

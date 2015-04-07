@@ -7,7 +7,7 @@
 
 
 // Comment this line to suppress print statements
-#define PRINT
+// #define PRINT
 
 #define TRUE                    1
 #define FALSE                   0
@@ -36,10 +36,8 @@ struct cacheBlock {
 struct reference {
     char type;                              // I, R, W (Instruction, Read Data, Write Data)
     unsigned long long address;             // 48 bits
-    unsigned long long L1_tag;              // up to 48 bits
-    int L1_index;                           // up to 10 bits
-    unsigned long long L2_tag;              // up to 48 bits
-    int L2_index;                           // up to 10 bits
+    unsigned long long tag[2];              // up to 48 bits
+    unsigned long long index[2];            // up to 10 bits
     int numBytes;                           // Number of bytes requested
 };
 

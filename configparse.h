@@ -8,7 +8,7 @@
 
 	
 // Comment this line to suppress print statements
-#define PRINT
+// #define PRINT
 
 #define BUFFER_SIZE				100
 #define DELIM					"="
@@ -64,7 +64,12 @@ int CACHE_SIZE[2];
 int ASSOC[2];
 int TAG_SIZE[2];
 int INDEX_SIZE[2];
+unsigned long long INDEX_MASK[2];
 
+
+/******************************************************************************************************
+ * Struct to hold calculated results
+******************************************************************************************************/
 struct results {
 	struct configuration config;
 	unsigned int memReadyTime;

@@ -18,7 +18,8 @@ int main( int argc, char** argv ) {
 	struct reference ref;
 	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
 		printf("%c %llx %d\n",ref.type,ref.address,ref.numBytes);
-
+        decomposeAddress( &ref, L1 );
+        
 	}
 
 	runResults.config = config;
