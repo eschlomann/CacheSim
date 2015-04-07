@@ -14,20 +14,30 @@
 
 
 /******************************************************************************************************
- * Struct to represent the address as a tag and an index
- ******************************************************************************************************/
-struct address convertAddress( unsigned long long addr ); 
-
-
-/******************************************************************************************************
  * Struct to represent each block of the cache
  ******************************************************************************************************/
 struct cacheBlock {
     bool valid;
     bool dirty;
-    unsigned long long tag;                 // tag has to be able to handle up to 48 bits (long long is 64 bits)
-    // block: would put data here but the simulation doesn't put actual data into the cache, just makes calls to it
+    unsigned long long tag;                 // Tag has to be able to handle up to 48 bits (long long is 64 bits)
+    // Block: would put data here but the simulation doesn't put actual data into the cache, just makes calls to it
 };
+
+
+/******************************************************************************************************
+ * Struct to represent each cache
+ ******************************************************************************************************/
+struct cache {
+    struct cacheBlock* block;               // Pointer to an array of cacheBlocks
+};
+
+
+/******************************************************************************************************
+ * Define the three caches
+ ******************************************************************************************************/
+struct cache L1_instruction;
+struct cache L1_data;
+struct cache L2_unified;
 
 
 /******************************************************************************************************
@@ -42,6 +52,16 @@ struct reference {
 };
 
 
-// Cache should consist of array of cacheBlocks where the calculated index corresponds to the array index
+/******************************************************************************************************
+ * Decompose the address into a tag and an index and update the reference struct
+ ******************************************************************************************************/
+void decomposeAddress( struct reference* ref, cache_TypeDef cache ); 
+
+
+/******************************************************************************************************
+ * Construct cache
+ ******************************************************************************************************/
+void constructCache( struct cache* cache, cache_TypeDef cacheType ); 
+
 
 #endif // CACHE_H

@@ -2,7 +2,7 @@
 
 
 /******************************************************************************************************
- * Decompose the address into a tag and an index
+ * Decompose the address into a tag and an index and update the reference struct
  ******************************************************************************************************/
 void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
     unsigned long long address = ref->address; 
@@ -33,4 +33,19 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
     #ifdef PRINT
 	printf( "Tag: %lld \n\n", ref->tag[cache] );
     #endif
+}
+
+
+/******************************************************************************************************
+ * Construct cache
+ ******************************************************************************************************/
+void constructCache( struct cache* cache, cache_TypeDef cacheType ) { 
+    // Calculate number of blocks in the cache
+    int numBlocks = CACHE_SIZE[cacheType] / BLOCK_SIZE[cacheType];
+
+    // Create array of cacheBlocks
+    struct cacheBlock block[ numBlocks ];
+
+    // Point cache struct to array
+    cache->block = block;
 }
