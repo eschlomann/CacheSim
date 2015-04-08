@@ -21,24 +21,35 @@ int main( int argc, char** argv ) {
     constructCache( &L1_data , L1 );
     constructCache( &L2_unified , L2 );
 
-    LRUlist* L1i_LRU = makeLRU();
-    LRUlist* L1d_LRU = makeLRU();
-    LRUlist* L2_LRU  = makeLRU();
 
 	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
-		printf("%c %llx %d",ref.type,ref.address,ref.numBytes);
+		printf("\n%c %llx %d\n\n",ref.type,ref.address,ref.numBytes);
         decomposeAddress( &ref, L1 );
         if( strncmp(&ref.type,"I",1) == 0 ) {
-        	printf("\nThe tag is %llx",ref.tag[L1]);
-        	LRUpush (L1i_LRU,ref.tag[L1]);
+        	printf("\nThe tag is %llx\n",ref.tag[L1]);
+        	printf("The index is %llu\n",ref.index[L1]);
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	printf("wouldnt make sense but what about here");
+        	if ( LRUcheckDestroyPush( L1_instruction.block[ref.index[L1]].LRU , ref.tag[L1] ) ) {
+        		printf ("HIT\n\n\n");
+        	} else {
+        		printf ("MISS\n\n\n");
+        	}
         }
         
 	}
-	unsigned long long testTAG = 1;
-	while (testTAG != 0) {
-		testTAG = LRUpop(L1i_LRU);
-    	printf("\nThe tag popped off the array is: %llx\n",testTAG);
-    }
 
 	runResults.config = config;
 	if ( argc < 3) {

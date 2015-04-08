@@ -61,11 +61,15 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType ) {
 
         // Initialize tags to zero (this is arbitrary)
         unsigned long long* tags = (unsigned long long*) malloc( associativity*sizeof(unsigned long long) );
+        LRU_inst* LRU = makeLRU();
+        LRU->type = cacheType;
 
         // Link initialized arrays to associated cacheBlock
         block[i].valid = valid;
         block[i].dirty = dirty;
         block[i].tags = tags;
+        block[i].LRU = LRU;
+
     }
 
     // Point cache struct to array
@@ -105,19 +109,59 @@ bool queryCache( struct reference* ref, struct cache* cache ) {
     return hasTag;
 }
 
-LRUlist* makeLRU() {
-    return calloc (1, sizeof(LRUlist));
+LRU_inst* makeLRU(cache_TypeDef cacheType) {
+    return calloc (1, sizeof(LRU_inst));
 }
 
-void LRUclear (LRUlist* LRU) {
-
+bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag) {
+    printf("should get in here");
+    if ( LRU -> first == NULL) {
+        LRUpush ( LRU, tag );
+        return false;
+    } else {
+        if ( LRU -> first -> tag == tag ) {
+            return true;
+        } else {
+            LRUnode * parser = LRU -> first;
+            while ( parser != LRU -> last) {
+                if (parser -> next -> tag == tag) {
+                    parser -> next -> prev = parser -> prev -> next;
+                    parser -> prev -> next = parser -> next -> next;
+                    free( parser -> next );
+                    LRUpush( LRU , tag );
+                    free(parser);
+                    return true;
+                }
+                parser = parser -> next;
+            }
+            LRUpush( LRU, tag );
+            free(parser);
+            return false;
+        }
+    }
 }
 
-void LRUdestroy (LRUlist* LRU) {
-
+void LRUclear (LRU_inst* LRU) {
+    if (LRU -> first == LRU -> last) {
+        if (!( LRU -> first == NULL )) {
+            free (LRU -> first);
+        }
+    } else {
+        while( LRU -> first -> next != LRU -> last ) {
+            LRU -> first -> next = LRU -> first -> next -> next;
+            free(LRU -> first -> next);
+        }
+        free( LRU -> first );
+        free( LRU -> last );
+    } 
 }
 
-void LRUpush (LRUlist* LRU, unsigned long long tag) {
+void LRUpush (LRU_inst* LRU, unsigned long long tag) {
+    if ( LRU->count == ASSOC[LRU->type] ) {
+        if ( !LRUpop (LRU) ) {
+            printf("THIS SHOULD NEVER HAPPEN");
+        }
+    }
     LRUnode * node = calloc( 1, sizeof(LRUnode) );
     node->tag = tag;
     if (LRU->first == NULL) {
@@ -133,11 +177,11 @@ void LRUpush (LRUlist* LRU, unsigned long long tag) {
     printf("\n The last item in the list's tag is %llx\n",LRU->last->tag);
 }
 
-unsigned long long LRUpop (LRUlist* LRU) {
-    unsigned long long result;
+bool LRUpop (LRU_inst* LRU) {
+    bool result;
     LRUnode* lastNode = LRU->last;
     if( lastNode == NULL) {
-        result = 0;
+        result = false;
     } else {
         if ( LRU->first == lastNode) {
             LRU->first = NULL;
@@ -146,11 +190,11 @@ unsigned long long LRUpop (LRUlist* LRU) {
             lastNode->prev->next = NULL;
             LRU->last = lastNode->prev;
         }
-        result = lastNode->tag;
+        result = true;
         LRU->count--;
     }
     free(lastNode);
-    return result;
+    return true;
 }
 
 /******************************************************************************************************

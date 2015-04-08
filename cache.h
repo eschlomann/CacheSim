@@ -7,11 +7,25 @@
 
 
 // Comment this line to suppress print statements
-#define PRINT
+//#define PRINT
 
 #define TRUE                    1
 #define FALSE                   0
 
+typedef struct LRUnode {
+    struct LRUnode* prev;
+    struct LRUnode* next;
+    unsigned long long tag;
+    bool valid;
+    bool dirty;
+} LRUnode;
+
+typedef struct LRU_inst {
+    cache_TypeDef type;
+    unsigned long count;
+    LRUnode* first;
+    LRUnode* last;
+} LRU_inst;
 
 /******************************************************************************************************
  * Struct to represent each block of the cache
@@ -21,6 +35,7 @@ struct cacheBlock {
     bool* valid;                            // Pointer to valid array
     bool* dirty;                            // Pointer to dirty array
     unsigned long long* tags;               // Pointer to tag array
+    LRU_inst* LRU;                               // Pointer to LRU
     // Block: would put data here but the simulation doesn't put actual data into the cache, just makes calls to it
 };
 
@@ -53,23 +68,12 @@ struct reference {
     int numBytes;                           // Number of bytes requested
 };
 
-typedef struct LRUnode {
-    struct LRUnode* prev;
-    struct LRUnode* next;
-    unsigned long long tag;
-} LRUnode;
 
-typedef struct LRUlist {
-    unsigned long count;
-    LRUnode* first;
-    LRUnode* last;
-} LRUlist;
-
-LRUlist* makeLRU();
-void LRUclear (LRUlist* LRU);
-void LRUdestroy (LRUlist* LRU);
-void LRUpush (LRUlist* LRU, unsigned long long tag);
-unsigned long long LRUpop (LRUlist* LRU);
+LRU_inst* makeLRU();
+void LRUclear (LRU_inst* LRU);
+void LRUpush (LRU_inst* LRU, unsigned long long tag);
+bool LRUpop (LRU_inst* LRU);
+bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag);\
 
 
 /******************************************************************************************************
