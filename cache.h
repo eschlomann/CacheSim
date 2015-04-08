@@ -7,15 +7,13 @@
 
 
 // Comment this line to suppress print statements
-// #define PRINT
+#define PRINT
 
 #define TRUE                    1
 #define FALSE                   0
 
 
-/******************************************************************************************************
- * Struct to represent each block of the cache
- ******************************************************************************************************/
+/******************************************************************************************************/
 struct cacheBlock {
     bool valid;
     bool dirty;
@@ -51,6 +49,24 @@ struct reference {
     int numBytes;                           // Number of bytes requested
 };
 
+typedef struct LRUnode {
+    struct LRUnode* prev;
+    struct LRUnode* next;
+    unsigned long long tag;
+} LRUnode;
+
+typedef struct LRUlist {
+    unsigned long count;
+    LRUnode* first;
+    LRUnode* last;
+} LRUlist;
+
+LRUlist* makeLRU();
+void LRUclear (LRUlist* LRU);
+void LRUdestroy (LRUlist* LRU);
+void LRUpush (LRUlist* LRU, unsigned long long tag);
+unsigned long long LRUpop (LRUlist* LRU);
+
 
 /******************************************************************************************************
  * Decompose the address into a tag and an index and update the reference struct
@@ -61,7 +77,9 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache );
 /******************************************************************************************************
  * Construct cache
  ******************************************************************************************************/
-void constructCache( struct cache* cache, cache_TypeDef cacheType ); 
+void constructCache( struct cache* cache, cache_TypeDef cacheType );
+
+/*int checkCache( struct reference* ref, cache_TypeDef cache ); */
 
 
 #endif // CACHE_H
