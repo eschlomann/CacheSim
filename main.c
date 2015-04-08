@@ -21,7 +21,6 @@ int main( int argc, char** argv ) {
     constructCache( &L1_data, L1 );
     constructCache( &L2_unified, L2 );
 
-	struct reference ref;
 	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
 		printf("%c %llx %d\n",ref.type,ref.address,ref.numBytes);
         decomposeAddress( &ref, L1 );
