@@ -13,11 +13,14 @@
 #define FALSE                   0
 
 
-/******************************************************************************************************/
+/******************************************************************************************************
+ * Struct to represent each block of the cache
+ *      NOTE: Everything is represented as an array to support associative caches
+ ******************************************************************************************************/
 struct cacheBlock {
-    bool valid;
-    bool dirty;
-    unsigned long long tag;                 // Tag has to be able to handle up to 48 bits (long long is 64 bits)
+    bool* valid;                            // Pointer to valid array
+    bool* dirty;                            // Pointer to dirty array
+    unsigned long long* tags;               // Pointer to tag array
     // Block: would put data here but the simulation doesn't put actual data into the cache, just makes calls to it
 };
 
@@ -26,6 +29,7 @@ struct cacheBlock {
  * Struct to represent each cache
  ******************************************************************************************************/
 struct cache {
+    cache_TypeDef type;                     // Type of cache (L1 or L2)
     struct cacheBlock* block;               // Pointer to an array of cacheBlocks
 };
 
@@ -69,6 +73,12 @@ unsigned long long LRUpop (LRUlist* LRU);
 
 
 /******************************************************************************************************
+ * Define reference used for all traces 
+ ******************************************************************************************************/
+struct reference ref;
+
+
+/******************************************************************************************************
  * Decompose the address into a tag and an index and update the reference struct
  ******************************************************************************************************/
 void decomposeAddress( struct reference* ref, cache_TypeDef cache ); 
@@ -80,6 +90,12 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache );
 void constructCache( struct cache* cache, cache_TypeDef cacheType );
 
 /*int checkCache( struct reference* ref, cache_TypeDef cache ); */
+
+
+/******************************************************************************************************
+ * Query given cache for reference
+ ******************************************************************************************************/
+bool queryCache( struct reference* ref, struct cache* cache ); 
 
 
 #endif // CACHE_H
