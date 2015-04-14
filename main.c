@@ -28,20 +28,6 @@ int main( int argc, char** argv ) {
         if( strncmp(&ref.type,"I",1) == 0 ) {
         	printf("\nThe tag is %llx\n",ref.tag[L1]);
         	printf("The index is %llu\n",ref.index[L1]);
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
-        	printf("wouldnt make sense but what about here");
         	if ( LRUcheckDestroyPush( L1_instruction.block[ref.index[L1]].LRU , ref.tag[L1] ) ) {
         		printf ("HIT\n\n\n");
         	} else {

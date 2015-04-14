@@ -61,6 +61,8 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType ) {
 
         // Initialize tags to zero (this is arbitrary)
         unsigned long long* tags = (unsigned long long*) malloc( associativity*sizeof(unsigned long long) );
+
+		// Initialize LRU instance
         LRU_inst* LRU = makeLRU();
         LRU->type = cacheType;
 
