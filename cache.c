@@ -133,16 +133,6 @@ void addCache( struct reference* ref, struct cache* cache ) {
         // Indicate index was recently used
         LRUpush ( block.LRU , tagIndex );
     } 
-
-    /* I don't think this is necessary
-     
-    else if ((int) block.LRU->count < associativity) {
-        block.valid[block.LRU->count] = TRUE;
-        block.dirty[block.LRU->count] = FALSE;
-        block.tags[block.LRU->count] = tag;
-        LRUpush( block.LRU , block.LRU -> count );
-    }
-    */
 }
 
 
@@ -180,43 +170,16 @@ bool queryCache( struct reference* ref, struct cache* cache ) {
     return hasTag;
 }
 
-/*LRU_inst* makeLRU(cache_TypeDef cacheType) {
-    return calloc (1, sizeof(LRU_inst));
-}*/
-
-/*bool LRUcheckDestroyPush( LRU_inst* LRU, int arrayIndex ) {
-
-    if ( LRU -> first == NULL) {
-        LRUpush ( LRU, arrayIndex );
-        return false;
-    } else {
-        if ( LRU -> first -> arrayIndex == arrayIndex ) {
-            return true;
-        } else {
-            LRUnode * parser = LRU -> first;
-            while ( parser != LRU -> last) {
-                if (parser -> next -> arrayIndex == tag) {
-                    parser -> next -> prev = parser -> prev -> next;
-                    parser -> prev -> next = parser -> next -> next;
-                    free( parser -> next );
-                    LRUpush( LRU , tag );
-                    free(parser);
-                    return true;
-                }
-                parser = parser -> next;
-            }
-            LRUpush( LRU, tag );
-            free(parser);
-            return false;
-        }
-    }
-}*/
-
+/******************************************************************************************************
+ * Clears the LRU and frees the nodes. Should call when done with the entire program
+ ******************************************************************************************************/
 void LRUclear (LRU_inst* LRU) {
+    // Check the cases where it is single item or null
     if (LRU -> first == LRU -> last) {
         if (!( LRU -> first == NULL )) {
             free (LRU -> first);
         }
+    // If its multiple items iterate throught them and free memory
     } else {
         while( LRU -> first -> next != LRU -> last ) {
             LRU -> first -> next = LRU -> first -> next -> next;
@@ -227,14 +190,20 @@ void LRUclear (LRU_inst* LRU) {
     } 
 }
 
+/******************************************************************************************************
+ * Pushes a arrayIndex to the LRU should never push to something thats full (handled elsewhere).
+ ******************************************************************************************************/
 void LRUpush (LRU_inst* LRU, int arrayIndex) {
+    // Check to make sure that the LRU isnt full
     if ( LRU->count == ASSOC[LRU->type] ) {
         if ( !LRUpop (LRU) ) {
-            //printf("THIS SHOULD NEVER HAPPEN");
+            //Code should never get to here, it should be handled with the count
         }
     }
+    // Make the node with the value of the arrayIndex
     LRUnode * node = calloc( 1, sizeof(LRUnode) );
     node->arrayIndex = arrayIndex;
+    // Empty LRU case
     if (LRU->first == NULL) {
         LRU->first = node;
         LRU->last = node;
@@ -244,24 +213,31 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
         LRU->last = node;
     }
     LRU->count++;
-    //printf("\n The size of the LRU is %lu \n",LRU->count);
-    //printf("\n The last item in the list's tag is %i\n",LRU->last->arrayIndex);
+    #ifdef PRINT
+    printf("\n The size of the LRU is %lu \n",LRU->count);
+    printf("\n The last item in the list's tag is %i\n",LRU->last->arrayIndex);
+    #endif
 }
 
+/******************************************************************************************************
+ * Pops an item off the LRU, the int of the last used arrayIndex that needs to be replaced
+ ******************************************************************************************************/
 int LRUpop (LRU_inst* LRU) {
+    // Return value
     int result;
-    //LRUnode* lastNode = LRU->last;
+    
+    // Empty LRU case, doenst need to pop, returns 0 
     if( LRU -> count == 0 ) {
         result = 0;
     } else {
         if ( LRU -> count == 1 ) {
+            // if there is only one item
             free( LRU -> last );
             LRU -> last = NULL;
             LRU -> first = NULL;
             result = 0;
-            //LRU->first = NULL;
-            //LRU->last = NULL;
         } else {
+            // more than one item, really is only called when items = associativity
             result = LRU -> last -> arrayIndex;
             LRU -> last = LRU -> last -> prev;
             free ( LRU -> last -> next );
@@ -269,18 +245,5 @@ int LRUpop (LRU_inst* LRU) {
         }
         LRU->count--;
     }
-    return true;
+    return result;
 }
-
-/******************************************************************************************************
- * Check L1i cache for an instruction
- ******************************************************************************************************/
-/*int checkCache( struct reference* ref, cache_TypeDef cache ) {
-
-    if (L1_instruction.block[ref->index[cache]].tag == ref->tag[cache]) {
-        printf("HOLY SHIT THAT ACUTALLY WORKED???");
-        return 1;
-    } else {
-        return 0;
-    }
-}*/

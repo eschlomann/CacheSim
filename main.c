@@ -4,8 +4,8 @@
 int main( int argc, char** argv ) {
 	//TESTING PRINT FUNCTION PURPOSES ONLY (it really doesnt do much)
 	const struct results defaultResults = { config , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 
-		100 , 20 , 300 , 1000
-		, 200 , 3000 , 0 , 0 , 0 , 0.0 , 0.0 , 0 , 0 , 0 , 0 , 0
+		0 , 0 , 0 , 0
+		, 0 , 0 , 0 , 0 , 0 , 0.0 , 0.0 , 0 , 0 , 0 , 0 , 0
 		, 0 , 0 , 0.0 , 0.0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0.0
 		, 0.0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
 	runResults = defaultResults;
@@ -27,25 +27,6 @@ int main( int argc, char** argv ) {
        
         // Begin the statemachine
         stateMachine( &ref );
-
-        /*
-        if( strncmp(&ref.type,"I",1) == 0 ) {
-        	//printf("\nThe tag is %llx\n",ref.tag[L1]);
-        	//printf("The index is %llu\n",ref.index[L1]);
-        	if ( queryCache( &ref, &L1_instruction ) ) {
-        		printf ("HIT\n\n\n");
-        	} else {
-        		printf ("MISS\n\n\n");
-        	}
-
-        	if ( LRUcheckDestroyPush( L1_instruction.block[ref.index[L1]].LRU , ref.tag[L1] ) ) {
-        		printf ("HIT\n\n\n");
-        	} else {
-        		printf ("MISS\n\n\n");
-        	}
-        }
-        */
-        
 	}
 
 	runResults.config = config;

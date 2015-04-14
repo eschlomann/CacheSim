@@ -3,6 +3,7 @@
 
 #include <stdio.h>
 #include "cache.h"
+#include "print.h"
 
 
 // Comment this line to disable print statements

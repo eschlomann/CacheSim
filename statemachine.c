@@ -9,6 +9,7 @@ void stateMachine( struct reference* ref ) {
     // Find which L1 cache to access
     struct cache L1_cache;
     if( ref->type == 'I' ) {
+        runResults.numInst++;
         #ifdef PRINT
         printf( "L1 Instruction Cache: %c \n", ref->type );
         decomposeAddress( ref, L1 );
@@ -17,6 +18,11 @@ void stateMachine( struct reference* ref ) {
         #endif
         L1_cache = L1_instruction;
     } else if( (ref->type == 'R') || (ref->type == 'W') ) {
+        if ( ref-> type == 'R' ) {
+            runResults.numReads++;
+        } else {
+            runResults.numWrites++;
+        }
         #ifdef PRINT
         printf( "L1 Data Cache: %c \n", ref->type );
         decomposeAddress( ref, L1 );
