@@ -62,7 +62,7 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType ) {
         // Initialize tags to zero (this is arbitrary)
         unsigned long long* tags = (unsigned long long*) malloc( associativity*sizeof(unsigned long long) );
 
-        //Create the LRU instance and check the tag type
+        //Create the LRU instance and check the cache type
         LRU_inst* LRU = (LRU_inst*) calloc (1, sizeof(LRU_inst) );
         LRU->type = cacheType;
 
@@ -107,12 +107,12 @@ bool queryCache( struct reference* ref, struct cache* cache ) {
             }
         }
     }
-    if ( hasTag == FALSE && block.LRU -> count == associativity) {
+    if ( hasTag == FALSE && (int) block.LRU -> count == associativity) {
         int index = LRUpop( block.LRU );
         block.tags[index] = tag;
         LRUpush ( block.LRU , index );
     }
-    if (hasTag == FALSE && block.LRU -> count < associativity) {
+    if (hasTag == FALSE && (int) block.LRU -> count < associativity) {
         block.tags[block.LRU -> count] = tag;
         block.valid[block.LRU -> count] = true;
         LRUpush( block.LRU , block.LRU -> count );

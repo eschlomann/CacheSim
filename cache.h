@@ -73,7 +73,7 @@ struct reference {
 void LRUclear (LRU_inst* LRU);
 void LRUpush (LRU_inst* LRU, int arrayIndex);
 int LRUpop (LRU_inst* LRU);
-//bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag);\
+//bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag);
 
 
 /******************************************************************************************************

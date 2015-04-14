@@ -28,7 +28,6 @@ int main( int argc, char** argv ) {
         if( strncmp(&ref.type,"I",1) == 0 ) {
         	//printf("\nThe tag is %llx\n",ref.tag[L1]);
         	//printf("The index is %llu\n",ref.index[L1]);
-
         	if ( queryCache( &ref, &L1_instruction ) ) {
         		printf ("HIT\n\n\n");
         	} else {
