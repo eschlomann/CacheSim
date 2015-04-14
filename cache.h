@@ -15,7 +15,7 @@
 typedef struct LRUnode {
     struct LRUnode* prev;
     struct LRUnode* next;
-    unsigned long long tag;
+    int arrayIndex;
     bool valid;
     bool dirty;
 } LRUnode;
@@ -69,11 +69,11 @@ struct reference {
 };
 
 
-LRU_inst* makeLRU();
+//LRU_inst* makeLRU();
 void LRUclear (LRU_inst* LRU);
-void LRUpush (LRU_inst* LRU, unsigned long long tag);
-bool LRUpop (LRU_inst* LRU);
-bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag);\
+void LRUpush (LRU_inst* LRU, int arrayIndex);
+int LRUpop (LRU_inst* LRU);
+//bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag);\
 
 
 /******************************************************************************************************
