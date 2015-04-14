@@ -93,7 +93,11 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache );
  ******************************************************************************************************/
 void constructCache( struct cache* cache, cache_TypeDef cacheType );
 
-/*int checkCache( struct reference* ref, cache_TypeDef cache ); */
+
+/******************************************************************************************************
+ * Add given reference to the cache
+ ******************************************************************************************************/
+void addCache( struct reference* ref, struct cache* cache ); 
 
 
 /******************************************************************************************************
@@ -101,5 +105,7 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType );
  ******************************************************************************************************/
 bool queryCache( struct reference* ref, struct cache* cache ); 
 
+
+/*int checkCache( struct reference* ref, cache_TypeDef cache ); */
 
 #endif // CACHE_H

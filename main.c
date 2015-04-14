@@ -23,8 +23,12 @@ int main( int argc, char** argv ) {
 
 
 	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
-		printf("\n%c %llx %d\n\n",ref.type,ref.address,ref.numBytes);
-        decomposeAddress( &ref, L1 );
+		// printf("\n%c %llx %d\n\n",ref.type,ref.address,ref.numBytes);
+       
+        // Begin the statemachine
+        stateMachine( &ref );
+
+        /*
         if( strncmp(&ref.type,"I",1) == 0 ) {
         	printf("\nThe tag is %llx\n",ref.tag[L1]);
         	printf("The index is %llu\n",ref.index[L1]);
@@ -34,6 +38,7 @@ int main( int argc, char** argv ) {
         		printf ("MISS\n\n\n");
         	}
         }
+        */
         
 	}
 
@@ -43,4 +48,6 @@ int main( int argc, char** argv ) {
 	} else {
 		printResults( argv[2] );
 	}
+
+    return 1;
 }

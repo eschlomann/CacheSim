@@ -31,7 +31,7 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
     // Shift address again to get tag
     ref->tag[cache] = (address >> INDEX_SIZE[cache]);
     #ifdef PRINT
-	printf( "Tag: %lld \n\n", ref->tag[cache] );
+	printf( "Tag: %lld \n", ref->tag[cache] );
     #endif
 }
 
@@ -83,9 +83,42 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType ) {
 
 
 /******************************************************************************************************
+ * Add given reference to the cache
+ ******************************************************************************************************/
+void addCache( struct reference* ref, struct cache* cache ) {
+    // Get index
+    unsigned long long index = ref->index[cache->type];
+
+    // Get tag
+    unsigned long long tag = ref->tag[cache->type];
+
+    // Get associated block
+    struct cacheBlock block = cache->block[index];
+
+    // Check for any invalid blocks first
+    int i;
+    int associativity = ASSOC[cache->type];
+    for( i=0; i<associativity; i++ ) {
+        if( block.valid[i] == FALSE ) {
+            // Add tag in this position
+            block.valid[i] = TRUE;
+            block.dirty[i] = FALSE;
+            block.tags[i] = tag;
+            return;
+        }
+    }
+
+    // If there are no invalid blocks, replace the least recently used block
+        
+}
+
+
+/******************************************************************************************************
  * Query given cache for reference
  ******************************************************************************************************/
 bool queryCache( struct reference* ref, struct cache* cache ) {
+    #define PRINT
+    
     // Get index 
     unsigned long long index = ref->index[cache->type];
 
@@ -101,8 +134,11 @@ bool queryCache( struct reference* ref, struct cache* cache ) {
     bool hasTag = FALSE;
     for( i=0; i<associativity; i++ ) {
         // Check if tag is valid
-        if( block.valid[i] ) {
+        if( block.valid[i] == TRUE ) {
             if( block.tags[i] == tag ) {
+                #ifdef PRINT
+                printf( "Tag %lld is contained in cache \n", tag );
+                #endif
                 hasTag = TRUE;
             }
         }

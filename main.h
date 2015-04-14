@@ -2,6 +2,7 @@
 #include "configparse.h"
 #include "cache.h"
 #include "print.h"
+#include "statemachine.h"
 
 /*struct results {
 	struct configuration config;
