@@ -15,7 +15,7 @@
 typedef struct LRUnode {
     struct LRUnode* prev;
     struct LRUnode* next;
-    unsigned long long tag;
+    int arrayIndex;
     bool valid;
     bool dirty;
 } LRUnode;
@@ -35,7 +35,7 @@ struct cacheBlock {
     bool* valid;                            // Pointer to valid array
     bool* dirty;                            // Pointer to dirty array
     unsigned long long* tags;               // Pointer to tag array
-    LRU_inst* LRU;                               // Pointer to LRU
+    LRU_inst* LRU;                          // Pointer to LRU
     // Block: would put data here but the simulation doesn't put actual data into the cache, just makes calls to it
 };
 
@@ -69,11 +69,11 @@ struct reference {
 };
 
 
-LRU_inst* makeLRU();
+//LRU_inst* makeLRU();
 void LRUclear (LRU_inst* LRU);
-void LRUpush (LRU_inst* LRU, unsigned long long tag);
-bool LRUpop (LRU_inst* LRU);
-bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag);\
+void LRUpush (LRU_inst* LRU, int arrayIndex);
+int LRUpop (LRU_inst* LRU);
+//bool LRUcheckDestroyPush(LRU_inst* LRU, unsigned long long tag);
 
 
 /******************************************************************************************************
