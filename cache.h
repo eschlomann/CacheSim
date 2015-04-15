@@ -123,6 +123,12 @@ void addCache( struct reference* ref, struct cache* cache );
 bool queryCache( struct reference* ref, struct cache* cache ); 
 
 
+/******************************************************************************************************
+ * Set dirty bit for given reference
+ ******************************************************************************************************/
+void setDirty( struct reference* ref, struct cache* cache ); 
+
+
 /*int checkCache( struct reference* ref, cache_TypeDef cache ); */
 
 #endif // CACHE_H

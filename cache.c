@@ -170,6 +170,44 @@ bool queryCache( struct reference* ref, struct cache* cache ) {
     return hasTag;
 }
 
+
+/******************************************************************************************************
+ * Set dirty bit for given reference
+ ******************************************************************************************************/
+void setDirty( struct reference* ref, struct cache* cache ) {
+    #define PRINT
+    
+    // Get index 
+    unsigned long long index = ref->index[cache->type];
+
+    // Get tag
+    unsigned long long tag = ref->tag[cache->type];
+    
+    // Get associated block
+    struct cacheBlock block = cache->block[index];
+    // Check tag(s)
+    int i;
+    int associativity = ASSOC[cache->type];
+    for( i=0; i<associativity; i++ ) {
+        // Check if tag is valid
+        if( block.valid[i] == TRUE ) {
+            if( block.tags[i] == tag ) {
+                #ifdef PRINT
+                printf( "   Tag %lld is set to dirty \n", tag );
+                #endif
+                
+                // Set dirty bit
+                block.dirty[i] = TRUE;
+
+                // Update LRU
+                LRUpush ( block.LRU , i );
+                return;
+            }
+        }
+    }
+}
+
+
 /******************************************************************************************************
  * Clears the LRU and frees the nodes. Should call when done with the entire program
  ******************************************************************************************************/
@@ -179,7 +217,7 @@ void LRUclear (LRU_inst* LRU) {
         if (!( LRU -> first == NULL )) {
             free (LRU -> first);
         }
-    // If its multiple items iterate throught them and free memory
+    // If its multiple items iterate through them and free memory
     } else {
         while( LRU -> first -> next != LRU -> last ) {
             LRU -> first -> next = LRU -> first -> next -> next;
@@ -190,11 +228,12 @@ void LRUclear (LRU_inst* LRU) {
     } 
 }
 
+
 /******************************************************************************************************
  * Pushes a arrayIndex to the LRU should never push to something thats full (handled elsewhere).
  ******************************************************************************************************/
 void LRUpush (LRU_inst* LRU, int arrayIndex) {
-    // Check to make sure that the LRU isnt full
+    // Check to make sure that the LRU isn't full
     if ( LRU->count == ASSOC[LRU->type] ) {
         if ( !LRUpop (LRU) ) {
             //Code should never get to here, it should be handled with the count
@@ -219,6 +258,7 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
     #endif
 }
 
+
 /******************************************************************************************************
  * Pops an item off the LRU, the int of the last used arrayIndex that needs to be replaced
  ******************************************************************************************************/
@@ -226,7 +266,7 @@ int LRUpop (LRU_inst* LRU) {
     // Return value
     int result;
     
-    // Empty LRU case, doenst need to pop, returns 0 
+    // Empty LRU case, doesn't need to pop, returns 0 
     if( LRU -> count == 0 ) {
         result = 0;
     } else {

@@ -7,33 +7,7 @@
 void stateMachine( struct reference* ref ) {
 
     // Find which L1 cache to access
-    struct cache L1_cache;
-    if( ref->type == 'I' ) {
-        runResults.numInst++;
-        #ifdef PRINT
-        printf( "L1 Instruction Cache: %c \n", ref->type );
-        decomposeAddress( ref, L1 );
-        printf( "Tag: %lld \n", ref->tag[L1] );
-        printf( "Index %lld \n", ref->index[L1] );
-        #endif
-        L1_cache = L1_instruction;
-    } else if( (ref->type == 'R') || (ref->type == 'W') ) {
-        if ( ref-> type == 'R' ) {
-            runResults.numReads++;
-        } else {
-            runResults.numWrites++;
-        }
-        #ifdef PRINT
-        printf( "L1 Data Cache: %c \n", ref->type );
-        decomposeAddress( ref, L1 );
-        printf( "Tag: %lld \n", ref->tag[L1] );
-        printf( "Index %lld \n", ref->index[L1] );
-        #endif
-        L1_cache = L1_data;
-    } else {
-        printf( "Unrecognized reference type" );
-        return;
-    }
+    struct cache L1_cache = cacheType( ref );
 
     // Define initial state
     int state = QUERY_L1;
@@ -79,7 +53,55 @@ void stateMachine( struct reference* ref ) {
                 #endif
                 state = addL2( ref );
                 break;
+
+            case HANDLE_WRITE:
+                // Set dirty bit in L1 cache
+                #ifdef PRINT
+                printf( "Handle write case \n" );
+                #endif
+                state = handleWrite( ref, &L1_cache );
+                break;
         }
+    }
+}
+
+
+/******************************************************************************************************
+ * Selects correct L1 cache based on reference type
+ ******************************************************************************************************/
+struct cache cacheType( struct reference* ref ) {
+
+    if( ref->type == 'I' ) {
+        runResults.numInst++;
+
+        #ifdef PRINT
+        printf( "L1 Instruction Cache: %c \n", ref->type );
+        decomposeAddress( ref, L1 );
+        printf( "Tag: %lld \n", ref->tag[L1] );
+        printf( "Index %lld \n", ref->index[L1] );
+        #endif
+
+        return L1_instruction;
+
+    } else if( (ref->type == 'R') || (ref->type == 'W') ) {
+        if ( ref-> type == 'R' ) {
+            runResults.numReads++;
+        } else {
+            runResults.numWrites++;
+        }
+
+        #ifdef PRINT
+        printf( "L1 Data Cache: %c \n", ref->type );
+        decomposeAddress( ref, L1 );
+        printf( "Tag: %lld \n", ref->tag[L1] );
+        printf( "Index %lld \n", ref->index[L1] );
+        #endif
+        
+        return L1_data;
+
+    } else {
+        printf( "Unrecognized reference type" );
+        return L1_instruction;
     }
 }
 
@@ -96,9 +118,13 @@ int queryL1( struct reference* ref, struct cache* cache ) {
     bool hit = queryCache( ref, cache );
 
     // Transition based on result
-    if( hit == TRUE ) {
+    if( (hit == TRUE) && (ref->type == 'W') ) {
+        return HANDLE_WRITE;
+    } 
+    else if( hit == TRUE) {
         return IDLE;
-    } else {
+    } 
+    else {
         return QUERY_L2;
     }
 }
@@ -133,7 +159,12 @@ int addL1( struct reference* ref, struct cache* cache ) {
     addCache( ref, cache );
 
     // Transition
-    return IDLE;
+    if( ref->type == 'W' ) {
+        return HANDLE_WRITE;
+    } 
+    else {
+        return IDLE;
+    }
 }
 
 
@@ -147,4 +178,17 @@ int addL2( struct reference* ref ) {
 
     // Transition
     return ADD_L1;
+}
+
+
+/******************************************************************************************************
+ * Set the dirty bit of tag in L1 cache
+ ******************************************************************************************************/
+int handleWrite( struct reference* ref, struct cache* cache) {
+
+    // Set the dirty bit of given cache
+    setDirty( ref, cache );
+
+    // Transition
+    return IDLE;
 }
