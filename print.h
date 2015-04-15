@@ -2,14 +2,22 @@
 #define PRINT_H
 
 #include "configparse.h"
+#include "cache.h"
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 
 /******************************************************************************************************
+ * Print cache to verify entries
+ ******************************************************************************************************/
+void printCaches( char* cacheFile);
+
+
+/******************************************************************************************************
  * Function to print results to a file of choosing, uses the results structure
  ******************************************************************************************************/
 int printResults( char* );
+
 
 /******************************************************************************************************
  * Struct to hold calculated results

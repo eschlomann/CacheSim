@@ -29,6 +29,8 @@ int main( int argc, char** argv ) {
         stateMachine( &ref );
 	}
 
+	printCaches( "cacheResults.results" );
+
 	runResults.config = config;
 	if ( argc < 3) {
 		printResults( "resultsFile.results" );

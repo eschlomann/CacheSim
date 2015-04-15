@@ -110,3 +110,71 @@ int printResults ( char* resultsFile ) {
 	fclose(fp);
 	return 0;
 }
+
+void printCaches ( char* cacheFile) {
+	FILE * fp;
+	fp = fopen( cacheFile , "w");
+	int i, j;
+	int numBlocksL1 = CACHE_SIZE[L1] / BLOCK_SIZE[L1];
+	int numBlocksL2 = CACHE_SIZE[L2] / BLOCK_SIZE[L2];
+	
+	fprintf(fp,  "Memory Level:  L1i\n");
+	for ( i = 0; i < numBlocksL1; i++) {
+		if ( L1_instruction.block[i].LRU -> count > 0 ) {
+			fprintf(fp,  "Index:%5x |", i );
+			for( j = 0; j < ASSOC[L1]; j++) {
+				if ( (int)L1_instruction.block[i].LRU -> count > j ) {
+					fprintf(fp, " V:%d D:%d Tag:%13llx |", 
+						L1_instruction.block[i].valid[j] , 
+						L1_instruction.block[i].dirty[j] , 
+						L1_instruction.block[i].tags[j]
+					);
+				}
+			}
+			fprintf(fp, "\n");
+		}
+	}
+	fprintf(fp, "\n");
+
+	fprintf(fp,  "Memory Level:  L1d\n");
+	for ( i = 0; i < numBlocksL1; i++) {
+		if ( L1_data.block[i].LRU -> count > 0 ) {
+			fprintf(fp,  "Index:%5x |", i );
+			for( j = 0; j < ASSOC[L1]; j++) {
+				if ( (int)L1_data.block[i].LRU -> count > j ) {
+					fprintf(fp, " V:%d D:%d Tag:%13llx |", 
+						L1_data.block[i].valid[j] , 
+						L1_data.block[i].dirty[j] , 
+						L1_data.block[i].tags[j]
+					);
+				}
+			}
+			fprintf(fp, "\n");
+		}
+	}
+	fprintf(fp, "\n");
+
+	fprintf(fp,  "Memory Level:  L2\n");
+	for ( i = 0; i < numBlocksL2; i++) {
+		if ( L2_unified.block[i].LRU -> count > 0 ) {
+			fprintf(fp,  "Index:%5x |", i );
+			for( j = 0; j < ASSOC[L2]; j++) {
+				if ( (int)L2_unified.block[i].LRU -> count > j ) {
+					fprintf(fp, " V:%d D:%d Tag:%13llx |", 
+						L2_unified.block[i].valid[j] , 
+						L2_unified.block[i].dirty[j] , 
+						L2_unified.block[i].tags[j]
+					);
+				}
+			}
+			fprintf(fp, "\n");
+		}
+	}
+	fprintf(fp, "\n");
+}
+
+
+
+
+
+
