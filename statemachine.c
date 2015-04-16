@@ -119,12 +119,31 @@ int queryL1( struct reference* ref, struct cache* cache ) {
 
     // Transition based on result
     if( (hit == TRUE) && (ref->type == 'W') ) {
+        runResults.l1d_hit++;
+        runResults.numWriteCycles += config.L1_hit_time;
         return HANDLE_WRITE;
     } 
     else if( hit == TRUE) {
+        if (ref-> type == 'R') {
+            runResults.l1d_hit++;
+            runResults.numReadCycles += config.L1_hit_time;
+        } else {
+            runResults.l1i_hit++;
+            runResults.numInstCycles += config.L1_hit_time;
+        }
         return IDLE;
     } 
     else {
+        if (ref->type == 'I') {
+            runResults.l1i_miss++;
+            runResults.numInstCycles += config.L1_miss_time;
+        } else if (ref->type == 'W') {
+            runResults.l1d_miss++;
+            runResults.numWriteCycles += config.L1_miss_time;
+        } else {
+            runResults.l1d_miss++;
+            runResults.numReadCycles += config.L1_miss_time;
+        }
         return QUERY_L2;
     }
 }
@@ -137,14 +156,31 @@ int queryL2( struct reference* ref ) {
     
     // Decompose the address for the L2 cache
     decomposeAddress( ref, L2 );
-
+    int trasftertime;
     // Query L2 cache
     bool hit = queryCache( ref, &L2_unified );
-
     // Transition based on result
     if( hit == TRUE ) {
+        trasftertime = config.L2_transfer_time * ceil( (float)ref->numBytes / config.L2_bus_width );
+        runResults.l2_hit++;
+        if (ref->type == 'I') {
+            runResults.numInstCycles += config.L2_hit_time + trasftertime;
+        } else if (ref->type == 'W') {
+            runResults.numWriteCycles += config.L2_hit_time + trasftertime;
+        } else {
+            runResults.numReadCycles += config.L2_hit_time + trasftertime;
+        }
         return ADD_L1;
     } else {
+        trasftertime = config.mem_sendaddr + config.mem_ready + (config.mem_chunktime * ceil( (float)ref->numBytes / config.mem_chunksize ));
+        runResults.l2_miss++;
+        if (ref->type == 'I') {
+            runResults.numInstCycles += config.L2_miss_time + trasftertime;
+        } else if (ref->type == 'W') {
+            runResults.numWriteCycles += config.L2_miss_time + trasftertime;
+        } else {
+            runResults.numReadCycles += config.L2_miss_time + trasftertime;
+        }
         return ADD_L2;
     }
 }
@@ -161,8 +197,7 @@ int addL1( struct reference* ref, struct cache* cache ) {
     // Transition
     if( ref->type == 'W' ) {
         return HANDLE_WRITE;
-    } 
-    else {
+    } else {
         return IDLE;
     }
 }

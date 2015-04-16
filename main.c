@@ -2,14 +2,7 @@
 #include "main.h"
 
 int main( int argc, char** argv ) {
-	//TESTING PRINT FUNCTION PURPOSES ONLY (it really doesnt do much)
-	const struct results defaultResults = { config , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 
-		0 , 0 , 0 , 0
-		, 0 , 0 , 0 , 0 , 0 , 0.0 , 0.0 , 0 , 0 , 0 , 0 , 0
-		, 0 , 0 , 0.0 , 0.0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0.0
-		, 0.0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 };
-	runResults = defaultResults;
-	//END TESTING PRINT FUNCTION PURPOSES
+
 	if( argc < 2 ) {
 		configParse( "config" );
 	} else {
@@ -30,8 +23,13 @@ int main( int argc, char** argv ) {
 	}
 
 	printCaches( "cacheResults.results" );
+	
+    printf ("calculating cost");
+    runResults.l1_cost = 2 * (100 * (config.L1_cache_size/4096) + 100 * (log(config.L1_assoc) / log(2)) * (config.L1_cache_size/4096));
+    runResults.l2_cost = (int)(50 * ((float) config.L2_cache_size/65536) + 50 * (log(config.L2_assoc) / log(2)) * ((float)config.L2_block_size/65536));
+    runResults.mem_cost = 50 + 200 * (log ( 50 / config.mem_ready )) / log(2) + 25 + 100 * (log (config.mem_chunksize/16)) / log(2);
 
-	runResults.config = config;
+	runResults.m_config = config;
 	if ( argc < 3) {
 		printResults( "resultsFile.results" );
 	} else {

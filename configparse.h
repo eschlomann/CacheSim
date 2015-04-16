@@ -5,7 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-
 	
 // Comment this line to suppress print statements
 // #define PRINT
@@ -33,8 +32,6 @@ int configParse( char* );
 void defineAddressParameters( cache_TypeDef );
 
 
-void calculateCost();
-
 /******************************************************************************************************
  * Struct used to access cache parameters
 ******************************************************************************************************/
@@ -53,6 +50,11 @@ struct configuration {
 	int L2_miss_time;
 	int L2_transfer_time;
 	int L2_bus_width;
+	// Memory Parameters
+	int mem_sendaddr;
+	int mem_ready;
+	int mem_chunktime;
+	int mem_chunksize;
 };
 
 struct configuration config;
@@ -68,7 +70,6 @@ int TAG_SIZE[2];
 int INDEX_SIZE[2];
 unsigned long long INDEX_MASK[2];
 unsigned long long BYTE_MASK[2];
-
 
 
 #endif // CONFIGPARSE_H
