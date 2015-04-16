@@ -33,6 +33,8 @@ int configParse( char* );
 void defineAddressParameters( cache_TypeDef );
 
 
+void calculateCost();
+
 /******************************************************************************************************
  * Struct used to access cache parameters
 ******************************************************************************************************/
