@@ -1,4 +1,6 @@
 #include "configparse.h"
+#include "print.h"
+#include <math.h>
 
 
 /******************************************************************************************************
@@ -139,4 +141,10 @@ void defineAddressParameters( cache_TypeDef cache ) {
     printf( "Byte mask: %lld \n",mask );
     #endif
     BYTE_MASK[cache] = mask;
+}
+
+void caculateCost () {
+    runResults.l1_cost = (100 * (config.L1_block_size/4) + 100 * (log(config.L1_assoc) / log(2)) * (config.L1_block_size/4));
+    runResults.l2_cost = 200 * (config.L2_cache_size/64) + 50 * (log(config.L2_assoc) / log(2)) * (config.L2_block_size/64);
+    runResults.mem_cost = 0;
 }
