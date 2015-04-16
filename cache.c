@@ -251,6 +251,48 @@ void writeback( unsigned long long index, unsigned long long tag ) {
 
 
 /******************************************************************************************************
+ * Flush the cache by setting all blocks to invalid
+ ******************************************************************************************************/
+void flush( struct cache* cache ) {
+    
+    // Calculate number of blocks in the cache
+    int numBlocks = CACHE_SIZE[cache->type] / BLOCK_SIZE[cache->type];
+
+    // Get associativity
+    int associativity = ASSOC[cache->type];
+
+    // Iterate through each cacheBlock
+    int i, j;
+    struct cacheBlock block;
+    for( i = 0; i < numBlocks; i++ ) {
+        block = cache->block[i];
+        for( j = 0; j < associativity; j++ ) {
+            if( block.valid[j] == TRUE ) {
+                // Invalidate block
+                block.valid[j] = FALSE;
+            
+                // If dirty, handle writeback
+                if( block.dirty[j] == TRUE ) {
+                    block.dirty[j] = FALSE;
+                    
+                    // If L1 cache, need to writeback to L2 cache   
+                    if( cache->type == L1 ) {
+                        writeback( i, block.tags[j] );        
+                    }
+                    // Otherwise need to access main memory
+                    else { 
+                        // Do something
+                    }
+                }
+
+                // Handle LRU
+            }
+        }
+    }
+}
+
+
+/******************************************************************************************************
  * Clears the LRU and frees the nodes. Should call when done with the entire program
  ******************************************************************************************************/
 void LRUclear (LRU_inst* LRU) {
