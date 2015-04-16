@@ -135,7 +135,7 @@ void addCache( struct reference* ref, struct cache* cache ) {
             
             // If L1 cache, need to writeback to L2 cache   
             if( cache->type == L1 ) {
-                
+                writeback( index, block.tags[tagIndex] );        
             }
             // Otherwise need to access main memory
             else { 
@@ -190,14 +190,8 @@ bool queryCache( struct reference* ref, struct cache* cache ) {
 /******************************************************************************************************
  * Set dirty bit for given reference
  ******************************************************************************************************/
-void setDirty( struct reference* ref, struct cache* cache ) {
+void setDirty( unsigned long long index, unsigned long long tag, struct cache* cache ) {
     #define PRINT
-    
-    // Get index 
-    unsigned long long index = ref->index[cache->type];
-
-    // Get tag
-    unsigned long long tag = ref->tag[cache->type];
     
     // Get associated block
     struct cacheBlock block = cache->block[index];
@@ -252,8 +246,7 @@ void writeback( unsigned long long index, unsigned long long tag ) {
     #endif
 
     // Set constructed block to dirty
-
-
+    setDirty( L2_Index, L2_Tag, &L2_unified );
 }
 
 
@@ -302,8 +295,8 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
     }
     LRU->count++;
     #ifdef PRINT
-    printf("\n The size of the LRU is %lu \n",LRU->count);
-    printf("\n The last item in the list's tag is %i\n",LRU->last->arrayIndex);
+    printf("   The size of the LRU is %lu \n",LRU->count);
+    printf("   The last item in the list's tag is %i\n",LRU->last->arrayIndex);
     #endif
 }
 
