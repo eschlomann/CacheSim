@@ -25,8 +25,11 @@ int main( int argc, char** argv ) {
 	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
 		// printf("\n%c %llx %d\n\n",ref.type,ref.address,ref.numBytes);
        
+        // Testing
+        writeback( ref.index[L1], ref.tag[L1] );
+
         // Begin the statemachine
-        stateMachine( &ref );
+        // stateMachine( &ref );
 	}
 
 	printCaches( "cacheResults.results" );

@@ -110,6 +110,8 @@ void addCache( struct reference* ref, struct cache* cache ) {
 
             // Indicate this index was recently used
             LRUpush ( block.LRU , i );
+
+            // Don't ever need to writeback since data is invalid
             return;
         }
     }
@@ -126,6 +128,20 @@ void addCache( struct reference* ref, struct cache* cache ) {
 
         // Get most least recently used index
         int tagIndex = LRUpop( block.LRU );
+        
+        // If block is dirty, reset and indicate writeback
+        if( block.dirty[tagIndex] == TRUE ) {
+            block.dirty[tagIndex] = FALSE;
+            
+            // If L1 cache, need to writeback to L2 cache   
+            if( cache->type == L1 ) {
+                
+            }
+            // Otherwise need to access main memory
+            else { 
+
+            }
+        }
         
         // Overwrite associated tag
         block.tags[tagIndex] = tag;
@@ -205,6 +221,39 @@ void setDirty( struct reference* ref, struct cache* cache ) {
             }
         }
     }
+}
+
+
+/******************************************************************************************************
+ * Writeback from L1 cache to L2 cache by setting corresponding data to dirty
+ ******************************************************************************************************/
+void writeback( unsigned long long index, unsigned long long tag ) { 
+    #define PRINT
+
+    // Reconstruct the original address from the index and tag
+    unsigned long long address = ( (tag << INDEX_SIZE[L1]) | index );
+
+    // Get difference in tag+index address size between L1 and L2 (how much larger is L1 "address" than L2)
+    int difference = (TAG_SIZE[L1] + INDEX_SIZE[L1]) - (TAG_SIZE[L2] + INDEX_SIZE[L2]);
+
+    // Shift address to fit size of L2
+    address = address >> difference;
+
+    // Mask the address to get the index
+    unsigned long long L2_Index = (address & INDEX_MASK[L2]);
+    #ifdef PRINT
+	printf( "   Constructed Index: %lld \n", L2_Index );
+    #endif
+
+    // Shift address again to get tag
+    unsigned long long L2_Tag = (address >> INDEX_SIZE[L2]);
+    #ifdef PRINT
+	printf( "   Constructed Tag: %lld \n", L2_Tag );
+    #endif
+
+    // Set constructed block to dirty
+
+
 }
 
 
