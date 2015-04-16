@@ -67,6 +67,7 @@ int ASSOC[2];
 int TAG_SIZE[2];
 int INDEX_SIZE[2];
 unsigned long long INDEX_MASK[2];
+unsigned long long BYTE_MASK[2];
 
 
 

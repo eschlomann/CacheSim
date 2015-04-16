@@ -156,7 +156,7 @@ int queryL2( struct reference* ref ) {
 int addL1( struct reference* ref, struct cache* cache ) {
     
     // Add reference 
-    addCache( ref, cache );
+    addCache( ref, cache ); 
 
     // Transition
     if( ref->type == 'W' ) {
@@ -187,7 +187,7 @@ int addL2( struct reference* ref ) {
 int handleWrite( struct reference* ref, struct cache* cache) {
 
     // Set the dirty bit of given cache
-    setDirty( ref, cache );
+    setDirty( ref->index[cache->type], ref->tag[cache->type], cache );
 
     // Transition
     return IDLE;

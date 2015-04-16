@@ -11,7 +11,7 @@
 
 #define TRUE                    1
 #define FALSE                   0
-                // And retur
+
 
 /******************************************************************************************************
  * Struct to represent each item in the LRU
@@ -127,9 +127,13 @@ bool queryCache( struct reference* ref, struct cache* cache );
 /******************************************************************************************************
  * Set dirty bit for given reference
  ******************************************************************************************************/
-void setDirty( struct reference* ref, struct cache* cache ); 
+void setDirty( unsigned long long index, unsigned long long tag, struct cache* cache ); 
 
 
-/*int checkCache( struct reference* ref, cache_TypeDef cache ); */
+/******************************************************************************************************
+ * Writeback from L1 cache to L2 cache by setting corresponding data to dirty
+ ******************************************************************************************************/
+void writeback( unsigned long long index, unsigned long long tag ); 
+
 
 #endif // CACHE_H
