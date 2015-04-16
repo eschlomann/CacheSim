@@ -19,6 +19,7 @@
 #define ADD_L1                      3
 #define ADD_L2                      4
 #define HANDLE_WRITE                5
+#define FLUSH                       6
 
 
 /******************************************************************************************************
@@ -61,6 +62,12 @@ int addL2( struct reference* ref );
  * Set the dirty bit of tag in L1 cache
  ******************************************************************************************************/
 int handleWrite( struct reference* ref, struct cache* cache );
+
+
+/******************************************************************************************************
+ * Flush the cache by invalidating all of the data
+ ******************************************************************************************************/
+// int handleWrite( struct reference* ref, struct cache* cache );
 
 
 #endif // STATEMACHINE_H

@@ -136,4 +136,10 @@ void setDirty( unsigned long long index, unsigned long long tag, struct cache* c
 void writeback( unsigned long long index, unsigned long long tag ); 
 
 
+/******************************************************************************************************
+ * Flush the cache by setting all blocks to invalid
+ ******************************************************************************************************/
+void flush( struct cache* cache ); 
+
+
 #endif // CACHE_H
