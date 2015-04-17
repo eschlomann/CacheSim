@@ -1,7 +1,4 @@
 #include "configparse.h"
-#include "print.h"
-#include <math.h>
-
 
 /******************************************************************************************************
  * Parses the given configuration file and fills in the values of the configuration struct
@@ -52,7 +49,15 @@ int configParse( char* configFile ) {
 					config.L2_transfer_time = value;
 				} else if( count ==12 ) {
 					config.L2_bus_width = value;
-				}
+				} else if( count ==13 ) {
+                    config.mem_sendaddr = value;
+                } else if( count ==14 ) {
+                    config.mem_ready = value;
+                } else if( count ==15 ) {
+                    config.mem_chunktime = value;
+                } else if( count ==16 ) {
+                    config.mem_chunksize = value;
+                }
 			}
         }
     }
@@ -141,10 +146,7 @@ void defineAddressParameters( cache_TypeDef cache ) {
     printf( "Byte mask: %lld \n",mask );
     #endif
     BYTE_MASK[cache] = mask;
+
+
 }
 
-void caculateCost () {
-    runResults.l1_cost = (100 * (config.L1_block_size/4) + 100 * (log(config.L1_assoc) / log(2)) * (config.L1_block_size/4));
-    runResults.l2_cost = 200 * (config.L2_cache_size/64) + 50 * (log(config.L2_assoc) / log(2)) * (config.L2_block_size/64);
-    runResults.mem_cost = 0;
-}

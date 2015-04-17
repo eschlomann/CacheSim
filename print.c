@@ -5,27 +5,27 @@ int printResults ( char* resultsFile ) {
 	fp = fopen( resultsFile , "w");
 	fprintf(fp,"----------------------------------------------------------------------\n                          Simulation Results                          \n----------------------------------------------------------------------\n\n");
 	fprintf(fp,"Memory system:\n  Dcache size = %i : ways = %i : block size = %i \n  Lcache size = %i : ways = %i : block size = %i \n  L2-cache size = %i : ways = %i : block size = %i \n  Memory ready time = %i : chunksize = %i : chunktime = %i",
-		runResults.config.L1_cache_size,
-		runResults.config.L1_assoc,
-		runResults.config.L1_block_size,
-		runResults.config.L1_cache_size,
-		runResults.config.L1_assoc,
-		runResults.config.L1_block_size,
-		runResults.config.L2_cache_size,
-		runResults.config.L2_assoc,
-		runResults.config.L2_block_size,
-		runResults.memReadyTime,
-		runResults.chunksize,
-		runResults.chunktime
-	);
-	fprintf(fp,"\n\nExecute time = %i; Total refs = %i\nFlush time = %i\nInst refs = %i; Data refs = %i",
-		runResults.exTime,
-		runResults.totRefs,
-		runResults.flushTime,
-		runResults.instRefs,
-		runResults.dataRefs
+		runResults.m_config.L1_cache_size,
+		runResults.m_config.L1_assoc,
+		runResults.m_config.L1_block_size,
+		runResults.m_config.L1_cache_size,
+		runResults.m_config.L1_assoc,
+		runResults.m_config.L1_block_size,
+		runResults.m_config.L2_cache_size,
+		runResults.m_config.L2_assoc,
+		runResults.m_config.L2_block_size,
+		runResults.m_config.mem_ready,
+		runResults.m_config.mem_chunksize,
+		runResults.m_config.mem_chunktime
 	);
 	int totalRef = runResults.numReads + runResults.numWrites + runResults.numInst;
+	fprintf(fp,"\n\nExecute time = %i; Total refs = %i\nFlush time = %i\nInst refs = %i; Data refs = %i",
+		runResults.exTime,
+		totalRef,
+		runResults.flushTime,
+		runResults.numInst,
+		runResults.numReads + runResults.numWrites
+	);
 	fprintf(fp,"\n\nNumber of Reference Types: [Percentage]\n  Reads  = %11i   [%4.1f%%]\n  Writes = %11i   [%4.1f%%]\n  Inst.  = %11i   [%4.1f%%]\n  Total  = %11i",
 		runResults.numReads,
 		((float)runResults.numReads / (float)totalRef)*100,
@@ -94,13 +94,16 @@ int printResults ( char* resultsFile ) {
 		runResults.l2_flushKickouts
 	);
 	//Need more here, cost calculations + memory cost
+	int l1_cost = 2 * (100 * (config.L1_cache_size/4096) + 100 * (log(config.L1_assoc) / log(2)) * (config.L1_cache_size/4096));
+    int l2_cost = (int)(50 * ((float) config.L2_cache_size/65536) + 50 * (log(config.L2_assoc) / log(2)) * ((float)config.L2_block_size/65536));
+    int mem_cost = 50 + 200 * (log ( 50 / config.mem_ready )) / log(2) + 25 + 100 * (log (config.mem_chunksize/16)) / log(2);
 	fprintf(fp, "\n\nL1 cache cost (Icache $%i) + (Dcache $%i) = $%i\nL2 cache cost = $%i;  Memory cost = $%i; Total cost = $%i\nFlushes = %i  :  Invalidates = %i", 
-		runResults.l1_cost / 2,
-		runResults.l1_cost / 2,
-		runResults.l1_cost,
-		runResults.l2_cost,
-		runResults.mem_cost,
-		(runResults.l1_cost + runResults.l2_cost + runResults.mem_cost),
+		l1_cost / 2,
+		l1_cost / 2,
+		l1_cost,
+		l2_cost,
+		mem_cost,
+		(l1_cost + l2_cost + mem_cost),
 		runResults.flushes,
 		runResults.invalidates
 	);
@@ -172,9 +175,3 @@ void printCaches ( char* cacheFile) {
 	}
 	fprintf(fp, "\n");
 }
-
-
-
-
-
-

@@ -23,24 +23,18 @@ int printResults( char* );
  * Struct to hold calculated results
 ******************************************************************************************************/
 struct results {
-	struct configuration config;
-	unsigned int memReadyTime;
-	unsigned int chunksize;
-	unsigned int chunktime;
+	struct configuration m_config;
 	unsigned int exTime;
-	unsigned int totRefs;
 	unsigned int flushTime;
-	unsigned int instRefs;
-	unsigned int dataRefs;
-	unsigned int numReads;
-	unsigned int numWrites;
-	unsigned int numInst;
-	unsigned int numReadCycles;
-	unsigned int numWriteCycles;
-	unsigned int numInstCycles;
-	unsigned int l1i_hit;
-	unsigned int l1i_miss;
-	unsigned int l1i_total;
+	unsigned long long numReads;
+	unsigned long long numWrites;
+	unsigned long long numInst;
+	unsigned long long numReadCycles;
+	unsigned long long numWriteCycles;
+	unsigned long long numInstCycles;
+	unsigned long long l1i_hit;
+	unsigned long long l1i_miss;
+	unsigned long long l1i_total;
 	float l1i_hitRate;
 	float l1i_missRate;
 	unsigned int l1i_kickouts;
@@ -73,5 +67,6 @@ struct results {
 };
 
 struct results runResults;
+
 
 #endif // PRINT_H
