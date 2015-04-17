@@ -115,7 +115,7 @@ int queryL1( struct reference* ref, struct cache* cache ) {
     decomposeAddress( ref, L1 );
 
     // Query L1 cache
-    bool hit = queryCache( ref, cache );
+    bool hit = queryCache( ref->index[cache->type], ref->tag[cache->type], cache );
 
     // Transition based on result
     if( (hit == TRUE) && (ref->type == 'W') ) {
@@ -156,10 +156,13 @@ int queryL2( struct reference* ref ) {
     
     // Decompose the address for the L2 cache
     decomposeAddress( ref, L2 );
-    int trasftertime;
+
     // Query L2 cache
-    bool hit = queryCache( ref, &L2_unified );
+    struct cache* cache = &L2_unified;
+    bool hit = queryCache( ref->index[cache->type], ref->tag[cache->type], cache );
+
     // Transition based on result
+    int trasftertime;
     if( hit == TRUE ) {
         trasftertime = config.L2_transfer_time * ceil( (float)ref->numBytes / config.L2_bus_width );
         runResults.l2_hit++;
@@ -192,7 +195,7 @@ int queryL2( struct reference* ref ) {
 int addL1( struct reference* ref, struct cache* cache ) {
     
     // Add reference 
-    addCache( ref, cache ); 
+    addCache( ref->index[cache->type], ref->tag[cache->type], cache ); 
 
     // Transition
     if( ref->type == 'W' ) {
@@ -209,7 +212,8 @@ int addL1( struct reference* ref, struct cache* cache ) {
 int addL2( struct reference* ref ) {
     
     // Add reference 
-    addCache( ref, &L2_unified );
+    struct cache* cache = &L2_unified;
+    addCache( ref->index[cache->type], ref->tag[cache->type], cache ); 
 
     // Transition
     return ADD_L1;

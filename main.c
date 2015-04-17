@@ -20,6 +20,7 @@ int main( int argc, char** argv ) {
        
         // Begin the statemachine
         stateMachine( &ref );
+
 	}
 
 	printCaches( "cacheResults.results" );

@@ -82,14 +82,8 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType ) {
 /******************************************************************************************************
  * Add given reference to the cache
  ******************************************************************************************************/
-void addCache( struct reference* ref, struct cache* cache ) {
+void addCache( unsigned long long index, unsigned long long tag, struct cache* cache ) {
     #define PRINT
-
-    // Get index
-    unsigned long long index = ref->index[cache->type];
-
-    // Get tag
-    unsigned long long tag = ref->tag[cache->type];
 
     // Get associated block
     struct cacheBlock block = cache->block[index];
@@ -155,14 +149,8 @@ void addCache( struct reference* ref, struct cache* cache ) {
 /******************************************************************************************************
  * Query given cache for reference
  ******************************************************************************************************/
-bool queryCache( struct reference* ref, struct cache* cache ) {
+bool queryCache( unsigned long long index, unsigned long long tag, struct cache* cache ) {
     #define PRINT
-    
-    // Get index 
-    unsigned long long index = ref->index[cache->type];
-
-    // Get tag
-    unsigned long long tag = ref->tag[cache->type];
     
     // Get associated block
     struct cacheBlock block = cache->block[index];
@@ -285,7 +273,8 @@ void flush( struct cache* cache ) {
                     }
                 }
 
-                // Handle LRU
+                // Handle LRU (for now, can just pop to remove nodes from LRU)
+                LRUpop( block.LRU );
             }
         }
     }
