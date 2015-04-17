@@ -319,10 +319,41 @@ void LRUclear (LRU_inst* LRU) {
 void LRUpush (LRU_inst* LRU, int arrayIndex) {
     // Check to make sure that the LRU isn't full
     if ( LRU->count == ASSOC[LRU->type] ) {
+        printf ("\nTHE LRU IS FULL AND YOU'RE PUSHING\n");
         if ( !LRUpop (LRU) ) {
             //Code should never get to here, it should be handled with the count
         }
     }
+    
+    if (LRU -> first != NULL) {
+        LRUnode * parser;
+        parser = LRU->first;
+        while ( parser->next != NULL ) {
+            if ( parser -> arrayIndex == arrayIndex ) {
+                if (LRU -> count == 1) {
+    
+                } else if ( parser == LRU->first ) {
+                    free( parser->next->prev );
+                    LRU -> first = parser -> next;
+                    LRU->count--;
+                } else {
+                    free(parser -> prev -> next);
+                    parser -> prev -> next = parser -> next;
+                    if (parser -> next != NULL) {
+                        parser -> next -> prev = parser -> prev;   
+                    }
+                    LRU->count--;
+                }
+            }
+            parser = parser -> next;
+        }
+        if ( LRU -> last != NULL) {
+            if ( LRU -> last -> arrayIndex == arrayIndex) {
+                LRUpop(LRU);
+            }
+        }
+    }
+
     // Make the node with the value of the arrayIndex
     LRUnode * node = calloc( 1, sizeof(LRUnode) );
     node->arrayIndex = arrayIndex;
@@ -330,10 +361,12 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
     if (LRU->first == NULL) {
         LRU->first = node;
         LRU->last = node;
+        node -> next = NULL;
+        node -> prev = NULL;
     } else {
-        LRU->last->next = node;
-        node->prev = LRU->last;
-        LRU->last = node;
+        LRU->first->prev = node;
+        node->next = LRU->first;
+        LRU->first = node;
     }
     LRU->count++;
     #ifdef PRINT
@@ -356,7 +389,7 @@ int LRUpop (LRU_inst* LRU) {
     } else {
         if ( LRU -> count == 1 ) {
             // if there is only one item
-            free( LRU -> last );
+            free( LRU -> first );
             LRU -> last = NULL;
             LRU -> first = NULL;
             result = 0;
@@ -368,6 +401,7 @@ int LRUpop (LRU_inst* LRU) {
             LRU -> last -> next = NULL;
         }
         LRU->count--;
+        printf("decrimented LRU counter");
     }
     return result;
 }
