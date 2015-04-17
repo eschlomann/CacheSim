@@ -1,0 +1,19 @@
+# L1 cache parameters:
+32		L1_block_size
+8192 	L1_cache_size
+256 	L1_assoc
+1 		L1_hit_time
+1 		L1_miss_time
+# L2 cache parameters:
+64 		L2_block_size
+65536 	L2_cache_size
+1024 	L2_assoc
+5 		L2_hit_time
+7 		L2_miss_time
+5 		L2_transfer_time
+16 		L2_bus_width
+# Memory Parameters:
+10		mem_sendaddr
+50		mem_ready
+15		mem_chunktime
+16 		mem_chunksize
