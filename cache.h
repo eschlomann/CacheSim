@@ -70,8 +70,8 @@ struct cache L2_unified;
 struct reference {
     char type;                              // I, R, W (Instruction, Read Data, Write Data)
     unsigned long long address;             // 48 bits
-    unsigned long long tag[2];              // up to 48 bits
-    unsigned long long index[2];            // up to 10 bits
+    unsigned long long* tag[2];             // up to 48 bits
+    unsigned long long* index[2];           // up to 10 bits
     int numBytes;                           // Number of bytes requested
 };
 

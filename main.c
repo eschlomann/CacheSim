@@ -21,11 +21,14 @@ int main( int argc, char** argv ) {
         // Begin the statemachine
         stateMachine( &ref );
 
+        // Test
+        // decomposeAddress( &ref, L1 );
+
 	}
 
 	printCaches( "cacheResults.results" );
 	
-    printf ("calculating cost");
+    printf ("calculating cost \n");
     runResults.l1_cost = 2 * (100 * (config.L1_cache_size/4096) + 100 * (log(config.L1_assoc) / log(2)) * (config.L1_cache_size/4096));
     runResults.l2_cost = (int)(50 * ((float) config.L2_cache_size/65536) + 50 * (log(config.L2_assoc) / log(2)) * ((float)config.L2_block_size/65536));
     runResults.mem_cost = 50 + 200 * (log ( 50 / config.mem_ready )) / log(2) + 25 + 100 * (log (config.mem_chunksize/16)) / log(2);

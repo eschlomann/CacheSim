@@ -67,7 +67,7 @@ int handleWrite( struct reference* ref, struct cache* cache );
 /******************************************************************************************************
  * Flush the cache by invalidating all of the data
  ******************************************************************************************************/
-// int handleWrite( struct reference* ref, struct cache* cache );
+int flushCache( struct cache* cache );
 
 
 #endif // STATEMACHINE_H

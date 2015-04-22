@@ -77,8 +77,8 @@ struct cache cacheType( struct reference* ref ) {
         #ifdef PRINT
         printf( "L1 Instruction Cache: %c \n", ref->type );
         decomposeAddress( ref, L1 );
-        printf( "Tag: %lld \n", ref->tag[L1] );
-        printf( "Index %lld \n", ref->index[L1] );
+        printf( "Tag: %lld \n", ref->tag[L1][0] );
+        printf( "Index %lld \n", ref->index[L1][0] );
         #endif
 
         return L1_instruction;
@@ -93,8 +93,8 @@ struct cache cacheType( struct reference* ref ) {
         #ifdef PRINT
         printf( "L1 Data Cache: %c \n", ref->type );
         decomposeAddress( ref, L1 );
-        printf( "Tag: %lld \n", ref->tag[L1] );
-        printf( "Index %lld \n", ref->index[L1] );
+        printf( "Tag: %lld \n", ref->tag[L1][0] );
+        printf( "Index %lld \n", ref->index[L1][0] );
         #endif
         
         return L1_data;
@@ -115,7 +115,7 @@ int queryL1( struct reference* ref, struct cache* cache ) {
     decomposeAddress( ref, L1 );
 
     // Query L1 cache
-    bool hit = queryCache( ref->index[cache->type], ref->tag[cache->type], cache );
+    bool hit = queryCache( ref->index[cache->type][0], ref->tag[cache->type][0], cache );
 
     // Transition based on result
     if( (hit == TRUE) && (ref->type == 'W') ) {
@@ -159,7 +159,7 @@ int queryL2( struct reference* ref ) {
 
     // Query L2 cache
     struct cache* cache = &L2_unified;
-    bool hit = queryCache( ref->index[cache->type], ref->tag[cache->type], cache );
+    bool hit = queryCache( ref->index[cache->type][0], ref->tag[cache->type][0], cache );
 
     // Transition based on result
     int trasftertime;
@@ -195,7 +195,7 @@ int queryL2( struct reference* ref ) {
 int addL1( struct reference* ref, struct cache* cache ) {
     
     // Add reference 
-    addCache( ref->index[cache->type], ref->tag[cache->type], cache ); 
+    addCache( ref->index[cache->type][0], ref->tag[cache->type][0], cache ); 
 
     // Transition
     if( ref->type == 'W' ) {
@@ -213,7 +213,7 @@ int addL2( struct reference* ref ) {
     
     // Add reference 
     struct cache* cache = &L2_unified;
-    addCache( ref->index[cache->type], ref->tag[cache->type], cache ); 
+    addCache( ref->index[cache->type][0], ref->tag[cache->type][0], cache ); 
 
     // Transition
     return ADD_L1;
@@ -226,8 +226,23 @@ int addL2( struct reference* ref ) {
 int handleWrite( struct reference* ref, struct cache* cache) {
 
     // Set the dirty bit of given cache
-    setDirty( ref->index[cache->type], ref->tag[cache->type], cache );
+    setDirty( ref->index[cache->type][0], ref->tag[cache->type][0], cache );
 
     // Transition
     return IDLE;
 }
+
+
+/******************************************************************************************************
+ * Flush the cache by invalidating all of the data
+ ******************************************************************************************************/
+int flushCache( struct cache* cache ) {;
+    
+    // Flush the given cache
+    flush( cache );
+
+    // Transition
+    return IDLE;
+}
+
+
