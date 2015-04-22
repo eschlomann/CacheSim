@@ -5,7 +5,7 @@
  * Decompose the address into a tag and an index and update the reference struct
  ******************************************************************************************************/
 void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
-    //#define PRINT
+    // #define PRINT
 
     unsigned long long address = ref->address; 
     #ifdef PRINT
@@ -37,38 +37,42 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
 
     // Check if same as initial address (only one reference necessary)
     if( endAddress == address ) {
+        // Only one reference is needed
+        ref->numReferences = 1;
         #ifdef PRINT
         printf( "One reference \n" );
         #endif
+
         // Initialize reference
-        ref->index[cache] = calloc( 1, sizeof(unsigned long long) );
-        ref->tag[cache] = calloc( 1, sizeof(unsigned long long) );
+        ref->index = calloc( 1, sizeof(unsigned long long) );
+        ref->tag = calloc( 1, sizeof(unsigned long long) );
 
         // Set reference
-        ref->index[cache][0] = initialIndex;
-        ref->tag[cache][0] = initialTag;
+        ref->index[0] = initialIndex;
+        ref->tag[0] = initialTag;
 
         #ifdef PRINT
-	    printf( "   Index 0: %lld \n", ref->index[cache][0] );
-	    printf( "   Tag 0:   %lld \n", ref->tag[cache][0] );
+	    printf( "   Index 0: %lld \n", ref->index[0] );
+	    printf( "   Tag 0:   %lld \n", ref->tag[0] );
         #endif
     }
     // Otherwise need to calculate additional references
     else {
         // If the index is less than the maximum index, can just increment index
         int increment = (int)(endAddress - address);
+        ref->numReferences = increment + 1;
         printf( "Increment: %d \n", increment );
 
         // Initialize references
-        ref->index[cache] = calloc( increment+1, sizeof(unsigned long long) );
-        ref->tag[cache] = calloc( increment+1, sizeof(unsigned long long) );
+        ref->index = calloc( increment+1, sizeof(unsigned long long) );
+        ref->tag = calloc( increment+1, sizeof(unsigned long long) );
 
         // Set initial reference
-        ref->index[cache][0] = initialIndex;
-        ref->tag[cache][0] = initialTag;
+        ref->index[0] = initialIndex;
+        ref->tag[0] = initialTag;
         #ifdef PRINT
-	    printf( "   Index 0: %lld \n", ref->index[cache][0] );
-	    printf( "   Tag 0:   %lld \n", ref->tag[cache][0] );
+	    printf( "   Index 0: %lld \n", ref->index[0] );
+	    printf( "   Tag 0:   %lld \n", ref->tag[0] );
         #endif
 
         // For each increment, assign tag and index to the reference
@@ -79,16 +83,15 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
             // Increment index (should check if overflows)
             index++;
 
-            ref->index[cache][i] = index;
-            ref->tag[cache][i] = tag;
+            ref->index[i] = index;
+            ref->tag[i] = tag;
             
             #ifdef PRINT
-	        printf( "   Index %d: %lld \n", i, ref->index[cache][i] );
-	        printf( "   Tag %d:   %lld \n", i, ref->tag[cache][i] );
+	        printf( "   Index %d: %lld \n", i, ref->index[i] );
+	        printf( "   Tag %d:   %lld \n", i, ref->tag[i] );
             #endif
 
         }
-
     }
 }
 
@@ -264,9 +267,9 @@ void setDirty( unsigned long long index, unsigned long long tag, struct cache* c
 
 
 /******************************************************************************************************
- * Writeback from L1 cache to L2 cache by setting corresponding data to dirty
+ * Construct L2_Tag and L2_Index based on L1_Tag and L1_Index
  ******************************************************************************************************/
-void writeback( unsigned long long index, unsigned long long tag ) { 
+void constructL2Ref( struct L2_Reference* ref, unsigned long long index, unsigned long long tag ) {
     #define PRINT
 
     // Reconstruct the original address from the index and tag
@@ -279,19 +282,33 @@ void writeback( unsigned long long index, unsigned long long tag ) {
     address = address >> difference;
 
     // Mask the address to get the index
-    unsigned long long L2_Index = (address & INDEX_MASK[L2]);
+    ref->L2_Index = (address & INDEX_MASK[L2]);
     #ifdef PRINT
-	printf( "   Constructed Index: %lld \n", L2_Index );
+	printf( "   Constructed Index: %lld \n", ref->L2_Index );
     #endif
 
     // Shift address again to get tag
-    unsigned long long L2_Tag = (address >> INDEX_SIZE[L2]);
+    ref->L2_Tag = (address >> INDEX_SIZE[L2]);
     #ifdef PRINT
-	printf( "   Constructed Tag: %lld \n", L2_Tag );
+	printf( "   Constructed Tag: %lld \n", ref->L2_Tag );
     #endif
+}
+
+
+/******************************************************************************************************
+ * Writeback from L1 cache to L2 cache by setting corresponding data to dirty
+ ******************************************************************************************************/
+void writeback( unsigned long long index, unsigned long long tag ) { 
+    #define PRINT
+
+    // Make L2_Reference struct
+    struct L2_Reference ref;
+
+    // Get L2 reference
+    constructL2Ref( &ref, index, tag );
 
     // Set constructed block to dirty
-    setDirty( L2_Index, L2_Tag, &L2_unified );
+    setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified );
 }
 
 

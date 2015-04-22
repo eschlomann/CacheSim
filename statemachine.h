@@ -20,6 +20,21 @@
 #define ADD_L2                      4
 #define HANDLE_WRITE                5
 #define FLUSH                       6
+#define TERMINATE                   7
+
+
+/******************************************************************************************************
+ * Struct to represent state and L1_Index and L1_Tag
+ ******************************************************************************************************/
+ struct state {
+    int next;                               // Transition to this state 
+    int iteration;                          // Index of the current reference
+    char type;                              // Type of instruction
+    unsigned long long L1_Tag;              // L1 tag to access
+    unsigned long long L1_Index;            // L1 index to access
+    unsigned long long L2_Tag;              // L2 tag of access
+    unsigned long long L2_Index;            // L2 index to access
+};
 
 
 /******************************************************************************************************
@@ -35,39 +50,45 @@ struct cache cacheType( struct reference* ref );
 
 
 /******************************************************************************************************
+ * Set L1 tag and index based on iteration
+ ******************************************************************************************************/
+void incrementL1( struct state* state, struct reference* ref );
+
+
+/******************************************************************************************************
  * Access L1 cache to get reference
  ******************************************************************************************************/
-int queryL1( struct reference* ref, struct cache* cache );
+void queryL1( struct state* state, struct cache* cache );
 
 
 /******************************************************************************************************
  * Access L2 cache to get reference
  ******************************************************************************************************/
-int queryL2( struct reference* ref );
+void queryL2( struct state* state );
 
 
 /******************************************************************************************************
  * Add tag to L1 cache
  ******************************************************************************************************/
-int addL1( struct reference* ref, struct cache* cache );
+void addL1( struct state* state, struct cache* cache );
 
 
 /******************************************************************************************************
  * Add tag to L2 cache
  ******************************************************************************************************/
-int addL2( struct reference* ref );
+void addL2( struct state* state );
 
 
 /******************************************************************************************************
  * Set the dirty bit of tag in L1 cache
  ******************************************************************************************************/
-int handleWrite( struct reference* ref, struct cache* cache );
+void handleWrite( struct state* state, struct cache* cache );
 
 
 /******************************************************************************************************
  * Flush the cache by invalidating all of the data
  ******************************************************************************************************/
-int flushCache( struct cache* cache );
+void flushCache( struct state* state, struct cache* cache );
 
 
 #endif // STATEMACHINE_H

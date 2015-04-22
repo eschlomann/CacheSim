@@ -70,9 +70,19 @@ struct cache L2_unified;
 struct reference {
     char type;                              // I, R, W (Instruction, Read Data, Write Data)
     unsigned long long address;             // 48 bits
-    unsigned long long* tag[2];             // up to 48 bits
-    unsigned long long* index[2];           // up to 10 bits
+    unsigned long long* tag;                // Array of L1 tags to access
+    unsigned long long* index;              // Array of L1 indexes to access
+    int numReferences;                      // Number of aligned references requested
     int numBytes;                           // Number of bytes requested
+};
+
+
+/******************************************************************************************************
+ * Struct to represent index and tag of L2 cache
+ ******************************************************************************************************/
+struct L2_Reference {
+    unsigned long long L2_Tag;              // L2 tag to access
+    unsigned long long L2_Index;            // L2 index to access
 };
 
 
@@ -128,6 +138,12 @@ bool queryCache( unsigned long long index, unsigned long long tag, struct cache*
  * Set dirty bit for given reference
  ******************************************************************************************************/
 void setDirty( unsigned long long index, unsigned long long tag, struct cache* cache ); 
+
+
+/******************************************************************************************************
+ * Construct L2_Tag and L2_Index based on L1_Tag and L1_Index
+ ******************************************************************************************************/
+void constructL2Ref( struct L2_Reference* ref, unsigned long long index, unsigned long long tag ); 
 
 
 /******************************************************************************************************
