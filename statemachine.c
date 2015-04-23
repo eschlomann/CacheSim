@@ -12,11 +12,18 @@ void stateMachine( struct reference* ref ) {
     // Define initial state
     struct state state;
     state.next = QUERY_L1;
+    state.type = ref->type;
     state.iteration = 0;
 
     // Define initial L1 reference
+    decomposeAddress( ref, L1 );
     state.L1_Index = ref->index[0];
     state.L1_Tag = ref->tag[0];
+
+    #ifdef PRINT
+    printf( "Tag:   %13llx \n", ref->tag[0] );
+    printf( "Index: %6llx \n", ref->index[0] );
+    #endif
     
     // Start state machine
     while( TRUE ) {
@@ -90,9 +97,6 @@ struct cache cacheType( struct reference* ref ) {
 
         #ifdef PRINT
         printf( "L1 Instruction Cache: %c \n", ref->type );
-        decomposeAddress( ref, L1 );
-        printf( "Tag: %lld \n", ref->tag[0] );
-        printf( "Index %lld \n", ref->index[0] );
         #endif
 
         return L1_instruction;
@@ -106,9 +110,6 @@ struct cache cacheType( struct reference* ref ) {
 
         #ifdef PRINT
         printf( "L1 Data Cache: %c \n", ref->type );
-        decomposeAddress( ref, L1 );
-        printf( "Tag: %lld \n", ref->tag[0] );
-        printf( "Index %lld \n", ref->index[0] );
         #endif
         
         return L1_data;
@@ -205,7 +206,7 @@ void queryL2( struct state* state ) {
     bool hit = queryCache( state->L2_Index, state->L2_Tag, cache );
 
     // Transition based on result
-    int trasftertime;
+    // int trasftertime;
     if( hit == TRUE ) {
         // trasftertime = config.L2_transfer_time * ceil( (float)ref->numBytes / config.L2_bus_width );
         runResults.l2_hit++;

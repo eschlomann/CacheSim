@@ -7,3 +7,9 @@ TRACE="traces/traces-short/tr1"
 make
 # Runs TR1 trace through simulation under default settings
 zcat $TRACE | ./cacheSim.exe
+
+# Print final contents of cache
+cat cacheResults.results
+
+# Print final results of cache
+# cat resultsFile.results

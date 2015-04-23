@@ -105,16 +105,16 @@ void defineAddressParameters( cache_TypeDef cache ) {
     #endif
 
     // Calculate number of bits used to address each byte in the block
-    int bitsBytes = log(BLOCK_SIZE[cache]) / log(2);
+    int bitsBlock = log(BLOCK_SIZE[cache]) / log(2);
     #ifdef PRINT
-    printf( "Number of byte bits (%d): %d \n", cache, bitsBytes );
+    printf( "Number of block bits (%d): %d \n", cache, bitsBlock );
     #endif
     
     // Size of the address string
     int numAddress = 48;
 
     // Calculate how many bits are left over from the address
-    int bitsTag = numAddress - bitsIndex - bitsBytes;
+    int bitsTag = numAddress - bitsIndex - bitsBlock;
     #ifdef PRINT
     printf( "Number of tag bits (%d): %d \n", cache, bitsTag );
     #endif
@@ -138,7 +138,7 @@ void defineAddressParameters( cache_TypeDef cache ) {
     // Create bit mask to get bytes
     mask = 0;
     tempMask = 0;
-    for( i = 0; i < bitsBytes; i++ ) {
+    for( i = 0; i < bitsBlock; i++ ) {
         tempMask = 1 << i;
         mask = (mask | tempMask);
     }
