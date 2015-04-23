@@ -14,6 +14,7 @@ void stateMachine( struct reference* ref ) {
     state.next = QUERY_L1;
     state.type = ref->type;
     state.iteration = 0;
+    state.addL2 = FALSE;
 
     // Define initial L1 reference
     decomposeAddress( ref, L1 );
@@ -139,6 +140,9 @@ void incrementL1( struct state* state, struct reference* ref ) {
     state->L1_Index = ref->index[ state->iteration ];
     state->L1_Tag = ref->tag[ state->iteration ];
 
+    // Make sure add L2 is false
+    state->addL2 = FALSE;
+
     // Transition back start of statemachine
     state->next = QUERY_L1;
     return;
@@ -222,6 +226,8 @@ void queryL2( struct state* state ) {
     } else {
         // trasftertime = config.mem_sendaddr + config.mem_ready + (config.mem_chunktime * ceil( (float)ref->numBytes / config.mem_chunksize ));
         runResults.l2_miss++;
+        // Indicate that should add L2
+        state->addL2 = TRUE;
         if (state->type == 'I') {
             // runResults.numInstCycles += config.L2_miss_time + trasftertime;
         } else if (state->type == 'W') {
@@ -229,7 +235,7 @@ void queryL2( struct state* state ) {
         } else {
             // runResults.numReadCycles += config.L2_miss_time + trasftertime;
         }
-        state->next = ADD_L2;
+        state->next = ADD_L1;
         return;
     }
 }
@@ -244,7 +250,10 @@ void addL1( struct state* state, struct cache* cache ) {
     addCache( state->L1_Index, state->L1_Tag, cache ); 
 
     // Transition
-    if( state->type == 'W' ) {
+    if( state->addL2 == TRUE ) {
+        state->next = ADD_L2;
+        return;
+    } else if( state->type == 'W' ) {
         state->next = HANDLE_WRITE;
         return;
     } else {
@@ -264,8 +273,13 @@ void addL2( struct state* state ) {
     addCache( state->L2_Index, state->L2_Tag, cache ); 
 
     // Transition
-    state->next = ADD_L1;
-    return;
+    if( state->type == 'W' ) {
+        state->next = HANDLE_WRITE;
+        return;
+    } else {
+        state->next = IDLE;
+        return;
+    }
 }
 
 
