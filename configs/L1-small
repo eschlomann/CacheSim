@@ -1,7 +1,7 @@
 # L1 cache parameters:
 32		L1_block_size
-8192 	L1_cache_size
-8 		L1_assoc
+4096 	L1_cache_size
+1 		L1_assoc
 1 		L1_hit_time
 1 		L1_miss_time
 # L2 cache parameters:

@@ -126,12 +126,19 @@ void printCaches ( char* cacheFile) {
 		if ( L1_instruction.block[i].LRU -> count > 0 ) {
 			fprintf(fp,  "Index:%5x |", i );
 			for( j = 0; j < ASSOC[L1]; j++) {
-				if ( (int)L1_instruction.block[i].LRU -> count > j ) {
-					fprintf(fp, " V:%d D:%d Tag:%13llx |", 
-						L1_instruction.block[i].valid[j] , 
-						L1_instruction.block[i].dirty[j] , 
-						L1_instruction.block[i].tags[j]
-					);
+				if ( L1_instruction.block[i].LRU -> count > j ) {
+					if ( L1_instruction.block[i].tags[j] == 0 ) {
+						fprintf(fp, " V:%d D:%d Tag: - |",
+							L1_instruction.block[i].valid[j] , 
+							L1_instruction.block[i].dirty[j]
+						); 
+					} else {
+						fprintf(fp, " V:%d D:%d Tag:%13llx |", 
+							L1_instruction.block[i].valid[j] , 
+							L1_instruction.block[i].dirty[j] , 
+							L1_instruction.block[i].tags[j]
+						);
+					}
 				}
 			}
 			fprintf(fp, "\n");
@@ -145,11 +152,18 @@ void printCaches ( char* cacheFile) {
 			fprintf(fp,  "Index:%5x |", i );
 			for( j = 0; j < ASSOC[L1]; j++) {
 				if ( (int)L1_data.block[i].LRU -> count > j ) {
-					fprintf(fp, " V:%d D:%d Tag:%13llx |", 
-						L1_data.block[i].valid[j] , 
-						L1_data.block[i].dirty[j] , 
-						L1_data.block[i].tags[j]
-					);
+					if ( L1_data.block[i].tags[j] == 0 ) {
+						fprintf(fp, " V:%d D:%d Tag: - |",
+							L1_data.block[i].valid[j] , 
+							L1_data.block[i].dirty[j]
+						); 
+					} else {
+						fprintf(fp, " V:%d D:%d Tag:%13llx |", 
+							L1_data.block[i].valid[j] , 
+							L1_data.block[i].dirty[j] , 
+							L1_data.block[i].tags[j]
+						);
+					}
 				}
 			}
 			fprintf(fp, "\n");
@@ -163,11 +177,18 @@ void printCaches ( char* cacheFile) {
 			fprintf(fp,  "Index:%5x |", i );
 			for( j = 0; j < ASSOC[L2]; j++) {
 				if ( (int)L2_unified.block[i].LRU -> count > j ) {
-					fprintf(fp, " V:%d D:%d Tag:%13llx |", 
-						L2_unified.block[i].valid[j] , 
-						L2_unified.block[i].dirty[j] , 
-						L2_unified.block[i].tags[j]
-					);
+					if ( L2_unified.block[i].tags[j] == 0 ) {
+						fprintf(fp, " V:%d D:%d Tag: - |",
+							L2_unified.block[i].valid[j] , 
+							L2_unified.block[i].dirty[j]
+						); 
+					} else {
+						fprintf(fp, " V:%d D:%d Tag:%13llx |", 
+							L2_unified.block[i].valid[j] , 
+							L2_unified.block[i].dirty[j] , 
+							L2_unified.block[i].tags[j]
+						);
+					}
 				}
 			}
 			fprintf(fp, "\n");

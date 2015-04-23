@@ -1,0 +1,29 @@
+#!/bin/bash
+
+#clean and make fresh
+make clean
+make
+CATARGS="gunzip -c"
+
+if [ "$1" == "Parker" ]
+	then
+		CATARGS="zcat"
+fi
+
+TRACES="traces/traces-long/*"
+CONFIGS="configs/*"
+
+for trace in $TRACES
+do
+	for config in $CONFIGS
+	do
+		TRACEFULLNAME="${trace##*/}"
+		TRACENAME="${TRACEFULLNAME%%.*}"
+		CONFIGNAME="${config##*/}"
+		echo "Testing $TRACENAME with $CONFIGNAME"
+		echo "$CATARGS $trace | ./cacheSim.exe $config results/$TRACENAME/$TRACENAME-$CONFIGNAME.result"
+		echo ""
+		echo ""
+		$CATARGS $trace | ./cacheSim.exe $config results/$TRACENAME/$TRACENAME-$CONFIGNAME.result
+	done
+done
