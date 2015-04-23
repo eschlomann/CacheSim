@@ -138,6 +138,8 @@ void printCaches ( char* cacheFile) {
 							L1_instruction.block[i].dirty[j] , 
 							L1_instruction.block[i].tags[j]
 						);
+					} if ( j % 2 == 1) {
+						fprintf(fp, "\n            |");
 					}
 				}
 			}
@@ -163,7 +165,10 @@ void printCaches ( char* cacheFile) {
 							L1_data.block[i].dirty[j] , 
 							L1_data.block[i].tags[j]
 						);
+					} if ( j % 2 == 1) {
+						fprintf(fp, "\n            |");
 					}
+
 				}
 			}
 			fprintf(fp, "\n");
@@ -188,6 +193,8 @@ void printCaches ( char* cacheFile) {
 							L2_unified.block[i].dirty[j] , 
 							L2_unified.block[i].tags[j]
 						);
+					} if ( j % 2 == 1) {
+						fprintf(fp, "\n            |");
 					}
 				}
 			}

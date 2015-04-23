@@ -276,7 +276,7 @@ void setDirty( unsigned long long index, unsigned long long tag, struct cache* c
                 block.dirty[i] = TRUE;
 
                 // Update LRU
-                LRUpush ( block.LRU , i );
+                // LRUpush ( block.LRU , i );
                 return;
             }
         }
@@ -399,12 +399,12 @@ void LRUclear (LRU_inst* LRU) {
  ******************************************************************************************************/
 void LRUpush (LRU_inst* LRU, int arrayIndex) {
     // Check to make sure that the LRU isn't full
-    if ( LRU->count == ASSOC[LRU->type] ) {
-        printf ("\nTHE LRU IS FULL AND YOU'RE PUSHING\n");
+    /*if ( LRU->count == ASSOC[LRU->type] ) {
         if ( !LRUpop (LRU) ) {
-            //Code should never get to here, it should be handled with the count
+            printf("        LRU pop called without reason, this means there is a push call when the LRU is full\n");
+
         }
-    }
+    }*/
     
     if (LRU -> first != NULL) {
         LRUnode * parser;
@@ -412,11 +412,13 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
         while ( parser->next != NULL ) {
             if ( parser -> arrayIndex == arrayIndex ) {
                 if (LRU -> count == 1) {
+                    printf("        LRU count is 1, and got hit : count %lu\n", LRU->count);
     
                 } else if ( parser == LRU->first ) {
                     free( parser->next->prev );
                     LRU -> first = parser -> next;
                     LRU->count--;
+                    printf("        LRU count decrimented : count %lu\n", LRU->count);
                 } else {
                     free(parser -> prev -> next);
                     parser -> prev -> next = parser -> next;
@@ -424,13 +426,16 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
                         parser -> next -> prev = parser -> prev;   
                     }
                     LRU->count--;
+                    printf("        LRU count decrimented : count %lu\n", LRU->count);
                 }
             }
             parser = parser -> next;
         }
         if ( LRU -> last != NULL) {
             if ( LRU -> last -> arrayIndex == arrayIndex) {
+                printf("        Hit at the last index of LRU calling pop\n");
                 LRUpop(LRU);
+                printf("        After pop called : count %lu\n", LRU->count);
             }
         }
     }
@@ -438,6 +443,8 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
     // Make the node with the value of the arrayIndex
     LRUnode * node = calloc( 1, sizeof(LRUnode) );
     node->arrayIndex = arrayIndex;
+    printf("        Creating node at %i\n", arrayIndex);
+
     // Empty LRU case
     if (LRU->first == NULL) {
         LRU->first = node;
@@ -450,6 +457,7 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
         LRU->first = node;
     }
     LRU->count++;
+    printf("        New count : %lu\n", LRU->count);
     #ifdef PRINT
     // printf("   The size of the LRU is %lu \n",LRU->count);
     // printf("   The last item in the list's tag is %i\n",LRU->last->arrayIndex);
@@ -482,7 +490,7 @@ int LRUpop (LRU_inst* LRU) {
             LRU -> last -> next = NULL;
         }
         LRU->count--;
-        printf("decrimented LRU counter");
+        printf("        decrimented LRU counter : count %lu\n", LRU->count);
     }
     return result;
 }
