@@ -19,7 +19,7 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
     address = address >> bitsBlock;
 
     // Initial address shifted to byte boundary
-    unsigned long long initialAddress = ref->address >> 3;
+    unsigned long long initialAddress = ref->address;
 
     // Mask the address to get the index
     unsigned long long initialIndex = (address & INDEX_MASK[cache]);
@@ -31,7 +31,6 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
     // Depending on the number of bytes requested, it may be multiple references
     unsigned long long endAddress = ref->address;
     unsigned long long offset = (unsigned long long) ref->numBytes;
-    // offset = offset << 2;
     endAddress = endAddress + offset;
     #ifdef PRINT
     printf( "   numBytes: %d \n", ref->numBytes );
@@ -39,10 +38,10 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
     #endif
 
     // Shift over by 3 (bytes)
-    endAddress = endAddress >> 3;
+    endAddress = endAddress;
 
     // Check if same as initial address (only one reference necessary)
-    if( endAddress == initialAddress ) {
+    if( (endAddress>>3) == (initialAddress>>3) ) {
         // Only one reference is needed
         ref->numReferences = 1;
         #ifdef PRINT
@@ -65,7 +64,7 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
     // Otherwise need to calculate additional references
     else {
         // Number of references needed
-        int increment = (int)(endAddress - initialAddress);
+        int increment = (int)((endAddress>>3) - (initialAddress>>3));
         ref->numReferences = increment + 1;
         printf( "   Number of References: %d \n", increment+1 );
 
@@ -89,11 +88,11 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache ) {
         unsigned long long tag = initialTag;
         for( i = 1; i < increment+1; i++ ) {
 
-            // Increment address by 2 bytes
-            currentAddress = currentAddress + 1;
+            // Increment address by 4 bytes
+            currentAddress = currentAddress + 4;
 
             // Make addr
-            addr = currentAddress >> (bitsBlock-3);
+            addr = (currentAddress >> bitsBlock);
             printf( "   Addr: %llx \n", addr );
 
             // Get associated index
