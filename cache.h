@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include "configparse.h"
+#include "print.h"
 
 
 // Comment this line to suppress print statements
@@ -52,6 +53,7 @@ struct cacheBlock {
  ******************************************************************************************************/
 struct cache {
     cache_TypeDef type;                     // Type of cache (L1 or L2)
+    char L1_Type;                           // Data or Instruction cache (for L1 only)
     struct cacheBlock* block;               // Pointer to an array of cacheBlocks
 };
 
@@ -119,7 +121,7 @@ void decomposeAddress( struct reference* ref, cache_TypeDef cache );
 /******************************************************************************************************
  * Construct cache
  ******************************************************************************************************/
-void constructCache( struct cache* cache, cache_TypeDef cacheType );
+void constructCache( struct cache* cache, cache_TypeDef cacheType, char c );
 
 
 /******************************************************************************************************

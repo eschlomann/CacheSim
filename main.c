@@ -10,9 +10,9 @@ int main( int argc, char** argv ) {
 	}
 
     // Initialize cache structures
-    constructCache( &L1_instruction , L1 );
-    constructCache( &L1_data , L1 );
-    constructCache( &L2_unified , L2 );
+    constructCache( &L1_instruction , L1, 'I' );
+    constructCache( &L1_data , L1, 'D' );
+    constructCache( &L2_unified , L2, '2' );
 
 
 	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
