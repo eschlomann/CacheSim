@@ -215,7 +215,8 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
                 writeback( index, block.tags[tagIndex] );        
 
                 // Increment hit count for L2 since guaranteed to be in L2
-                runResults.l2_hit++;
+                // runResults.l2_hit++;
+
                 // Increment dirty kickout for L1 (assuming data cache)
                 if( cache->L1_Type == 'I' ) {
                     runResults.l1i_dirtyKickouts++;
@@ -285,7 +286,7 @@ bool queryCache( unsigned long long index, unsigned long long tag, struct cache*
 /******************************************************************************************************
  * Set dirty bit for given reference
  ******************************************************************************************************/
-void setDirty( unsigned long long index, unsigned long long tag, struct cache* cache ) {
+bool setDirty( unsigned long long index, unsigned long long tag, struct cache* cache ) {
     // #define PRINT
     
     // Get associated block
@@ -307,10 +308,12 @@ void setDirty( unsigned long long index, unsigned long long tag, struct cache* c
 
                 // Update LRU
                 // LRUpush ( block.LRU , i );
-                return;
+
+                return TRUE;
             }
         }
     }
+    return FALSE;
 }
 
 
@@ -318,7 +321,7 @@ void setDirty( unsigned long long index, unsigned long long tag, struct cache* c
  * Construct L2_Tag and L2_Index based on L1_Tag and L1_Index
  ******************************************************************************************************/
 void constructL2Ref( struct L2_Reference* ref, unsigned long long index, unsigned long long tag ) {
-    #define PRINT
+    // #define PRINT
 
     // Reconstruct the original address from the index and tag
     unsigned long long newTag = (tag << INDEX_SIZE[L1]);
@@ -333,13 +336,13 @@ void constructL2Ref( struct L2_Reference* ref, unsigned long long index, unsigne
     // Mask the address to get the index
     ref->L2_Index = (address & INDEX_MASK[L2]);
     #ifdef PRINT
-	printf( "   Constructed Index: %6llx \n", ref->L2_Index );
+	printf( "   Constructed Index: %llx \n", ref->L2_Index );
     #endif
 
     // Shift address again to get tag
     ref->L2_Tag = (address >> INDEX_SIZE[L2]);
     #ifdef PRINT
-	printf( "   Constructed Tag: %13llx \n", ref->L2_Tag );
+	printf( "   Constructed Tag: %llx \n", ref->L2_Tag );
     #endif
 }
 
@@ -357,7 +360,12 @@ void writeback( unsigned long long index, unsigned long long tag ) {
     constructL2Ref( &ref, index, tag );
 
     // Set constructed block to dirty
-    setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified );
+    if( setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified ) ) {
+        runResults.l2_hit++;
+    } else {
+        runResults.l2_miss++;
+    }
+
 }
 
 

@@ -139,7 +139,7 @@ bool queryCache( unsigned long long index, unsigned long long tag, struct cache*
 /******************************************************************************************************
  * Set dirty bit for given reference
  ******************************************************************************************************/
-void setDirty( unsigned long long index, unsigned long long tag, struct cache* cache ); 
+bool setDirty( unsigned long long index, unsigned long long tag, struct cache* cache ); 
 
 
 /******************************************************************************************************
