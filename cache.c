@@ -395,7 +395,7 @@ void flush( struct cache* cache ) {
                         writeback( i, block.tags[j] );        
     
                         // Increment hit count for L2 since guaranteed to be in L2
-                        runResults.l2_hit++;
+                        // runResults.l2_hit++;
 
                         // Increment flush kickout for L1
                         if( cache->L1_Type == 'I' ) {
