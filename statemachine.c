@@ -115,8 +115,6 @@ struct cache cacheType( struct reference* ref ) {
 
         // Check number of instructions
         if( runResults.numInst % 380000 == 0 ) {
-            printf( "Flush \n" );
-            printf( "numInst: %d \n", runResults.numInst );
             setFlush = TRUE;
         }
 
@@ -230,14 +228,12 @@ void queryL2( struct state* state ) {
     state->L2_Index = L2_Ref.L2_Index;
 
     // Query L2 cache
-    struct cache* cache = &L2_unified;
-    bool hit = queryCache( state->L2_Index, state->L2_Tag, cache );
+    bool hit = queryCache( L2_Ref.L2_Index, L2_Ref.L2_Tag, &L2_unified );
 
     // Transition based on result
     // int trasftertime;
     if( hit == TRUE ) {
         // trasftertime = config.L2_transfer_time * ceil( (float)ref->numBytes / config.L2_bus_width );
-        runResults.l2_hit++;
         if (state->type == 'I') {
             // runResults.numInstCycles += config.L2_hit_time + trasftertime;
         } else if (state->type == 'W') {
@@ -245,13 +241,11 @@ void queryL2( struct state* state ) {
         } else {
             // runResults.numReadCycles += config.L2_hit_time + trasftertime; 
         }
+        runResults.l2_hit++;
         state->next = ADD_L1;
         return;
     } else {
         // trasftertime = config.mem_sendaddr + config.mem_ready + (config.mem_chunktime * ceil( (float)ref->numBytes / config.mem_chunksize ));
-        runResults.l2_miss++;
-        // Indicate that should add L2
-        state->addL2 = TRUE;
         if (state->type == 'I') {
             // runResults.numInstCycles += config.L2_miss_time + trasftertime;
         } else if (state->type == 'W') {
@@ -259,6 +253,9 @@ void queryL2( struct state* state ) {
         } else {
             // runResults.numReadCycles += config.L2_miss_time + trasftertime;
         }
+        runResults.l2_miss++;
+        // Indicate that should add L2
+        state->addL2 = TRUE;
         state->next = ADD_L1;
         return;
     }
@@ -333,6 +330,7 @@ void flushCaches( struct state* state ) {;
     flush( &L1_data );
 
     // Flush the L2_Unified cache
+    flush( &L2_unified );
     flush( &L2_unified );
 
     // Increment results

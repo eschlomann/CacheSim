@@ -194,10 +194,6 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
         }
     }
 
-    #ifdef PRINT
-    printf( "   Replace last used block \n" );
-    #endif
-
     // If there are no invalid blocks, replace the least recently used block
     if ( (int) block.LRU->count == associativity) {
         #ifdef PRINT
@@ -264,6 +260,7 @@ bool queryCache( unsigned long long index, unsigned long long tag, struct cache*
     
     // Get associated block
     struct cacheBlock block = cache->block[index];
+
     // Check tag(s)
     int i;
     int associativity = ASSOC[cache->type];
@@ -321,10 +318,11 @@ void setDirty( unsigned long long index, unsigned long long tag, struct cache* c
  * Construct L2_Tag and L2_Index based on L1_Tag and L1_Index
  ******************************************************************************************************/
 void constructL2Ref( struct L2_Reference* ref, unsigned long long index, unsigned long long tag ) {
-    // #define PRINT
+    #define PRINT
 
     // Reconstruct the original address from the index and tag
-    unsigned long long address = ( (tag << INDEX_SIZE[L1]) | index );
+    unsigned long long newTag = (tag << INDEX_SIZE[L1]);
+    unsigned long long address = ( newTag | index );
 
     // Get difference in tag+index address size between L1 and L2 (how much larger is L1 "address" than L2)
     int difference = (TAG_SIZE[L1] + INDEX_SIZE[L1]) - (TAG_SIZE[L2] + INDEX_SIZE[L2]);
@@ -370,29 +368,35 @@ void flush( struct cache* cache ) {
     
     // Calculate number of blocks in the cache
     int numBlocks = CACHE_SIZE[cache->type] / BLOCK_SIZE[cache->type];
+    printf( "***************************************************************************************** \n" );
+    printf( "cache->type: %d \n", cache->type );
+    printf( "numBlocks: %d \n", numBlocks );
 
     // Get associativity
     int associativity = ASSOC[cache->type];
 
     // Iterate through each cacheBlock
     int i, j;
+    int numValid = 0;
+    int numDirty = 0;
     struct cacheBlock block;
     for( i = 0; i < numBlocks; i++ ) {
         block = cache->block[i];
         for( j = 0; j < associativity; j++ ) {
             if( block.valid[j] == TRUE ) {
-                // Invalidate block
-                block.valid[j] = FALSE;
+                numValid++;
             
                 // If dirty, handle writeback
                 if( block.dirty[j] == TRUE ) {
                     block.dirty[j] = FALSE;
+                    numDirty++;
                     
                     if( cache->type == L1 ) {
                         writeback( i, block.tags[j] );        
     
                         // Increment hit count for L2 since guaranteed to be in L2
-                        // runResults.l2_hit++;
+                        runResults.l2_hit++;
+
                         // Increment flush kickout for L1
                         if( cache->L1_Type == 'I' ) {
                             runResults.l1i_flushKickouts++;
@@ -407,12 +411,16 @@ void flush( struct cache* cache ) {
         
                     }
                 }
+                // Invalidate block
+                block.valid[j] = FALSE;
 
                 // Handle LRU (for now, can just pop to remove nodes from LRU)
                 LRUpop( block.LRU );
             }
         }
     }
+    printf( "numValid: %d \n", numValid );
+    printf( "numDirty: %d \n", numDirty );
 }
 
 
