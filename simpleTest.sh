@@ -9,7 +9,7 @@ make
 zcat $TRACE | ./cacheSim.exe
 
 # Print final contents of cache
-cat cacheResults.results
+# cat cacheResults.results
 
 # Print final results of cache
 # cat resultsFile.results

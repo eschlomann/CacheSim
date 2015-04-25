@@ -243,7 +243,6 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
                 runResults.l1d_kickouts++;
             }
         } else {
-            printf( "L2 got kicked out: %llx \n", block.tags[tagIndex] );
             runResults.l2_kickouts++;
         }
 
@@ -295,24 +294,13 @@ void setDirty( unsigned long long index, unsigned long long tag, struct cache* c
     // Get associated block
     struct cacheBlock block = cache->block[index];
 
-    if( cache->type == L2 ) {
-        printf( "L2 block is dirty \n" );
-    }
-
     // Check tag(s)
     int i;
     int associativity = ASSOC[cache->type];
     for( i=0; i<associativity; i++ ) {
         // Check if tag is valid
         if( block.valid[i] == TRUE ) {
-            if( cache->type == L2 ) {
-                printf( "   L2 block is valid \n" );
-                printf( "   Associated tag: %llx \n", tag );
-            }
             if( block.tags[i] == tag ) {
-                if( cache->type == L2 ) {
-                    printf( "   L2 tag is valid \n" );
-                }
                 #ifdef PRINT
                 printf( "   Tag %llx is set to dirty \n", tag );
                 #endif

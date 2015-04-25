@@ -16,8 +16,7 @@ void stateMachine( struct reference* ref ) {
     state.addL2 = FALSE;
 
     // Check instruction count
-    if( runResults.numInst % 380000 == 0 ) {
-        printf( "Flush \n" );
+    if( setFlush == TRUE ) {
         state.next = FLUSH;
     } else {
         state.next = QUERY_L1;
@@ -107,9 +106,19 @@ void stateMachine( struct reference* ref ) {
  * Selects correct L1 cache based on reference type
  ******************************************************************************************************/
 struct cache cacheType( struct reference* ref ) {
+    
+    // Make sure setFlush is initially false
+    setFlush = FALSE;
 
     if( ref->type == 'I' ) {
         runResults.numInst++;
+
+        // Check number of instructions
+        if( runResults.numInst % 380000 == 0 ) {
+            printf( "Flush \n" );
+            printf( "numInst: %d \n", runResults.numInst );
+            setFlush = TRUE;
+        }
 
         #ifdef PRINT
         printf( "L1 Instruction Cache: %c \n", ref->type );
