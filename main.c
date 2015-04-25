@@ -21,9 +21,6 @@ int main( int argc, char** argv ) {
         // Begin the statemachine
         stateMachine( &ref );
 
-        // Test
-        // decomposeAddress( &ref, L1 );
-
 	}
 
 	printCaches( "cacheResults.results" );

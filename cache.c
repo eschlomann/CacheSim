@@ -400,13 +400,23 @@ void flush( struct cache* cache ) {
                 if( block.dirty[j] == TRUE ) {
                     block.dirty[j] = FALSE;
                     
-                    // If L1 cache, need to writeback to L2 cache   
                     if( cache->type == L1 ) {
                         writeback( i, block.tags[j] );        
+    
+                        // Increment hit count for L2 since guaranteed to be in L2
+                        // runResults.l2_hit++;
+                        // Increment flush kickout for L1
+                        if( cache->L1_Type == 'I' ) {
+                            runResults.l1i_flushKickouts++;
+                        } else {
+                            runResults.l1d_flushKickouts++;
+                        }
                     }
                     // Otherwise need to access main memory
                     else { 
-                        // Do something
+                        // Increment dirty kickout for L2
+                        runResults.l2_flushKickouts++;
+        
                     }
                 }
 
@@ -454,13 +464,13 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
         while ( parser->next != NULL ) {
             if ( parser -> arrayIndex == arrayIndex ) {
                 if (LRU -> count == 1) {
-                    printf("        LRU count is 1, and got hit : count %lu\n", LRU->count);
+                    // printf("        LRU count is 1, and got hit : count %lu\n", LRU->count);
     
                 } else if ( parser == LRU->first ) {
                     free( parser->next->prev );
                     LRU -> first = parser -> next;
                     LRU->count--;
-                    printf("        LRU count decrimented : count %lu\n", LRU->count);
+                    // printf("        LRU count decrimented : count %lu\n", LRU->count);
                 } else {
                     free(parser -> prev -> next);
                     parser -> prev -> next = parser -> next;
@@ -468,16 +478,16 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
                         parser -> next -> prev = parser -> prev;   
                     }
                     LRU->count--;
-                    printf("        LRU count decrimented : count %lu\n", LRU->count);
+                    // printf("        LRU count decrimented : count %lu\n", LRU->count);
                 }
             }
             parser = parser -> next;
         }
         if ( LRU -> last != NULL) {
             if ( LRU -> last -> arrayIndex == arrayIndex) {
-                printf("        Hit at the last index of LRU calling pop\n");
+                // printf("        Hit at the last index of LRU calling pop\n");
                 LRUpop(LRU);
-                printf("        After pop called : count %lu\n", LRU->count);
+                // printf("        After pop called : count %lu\n", LRU->count);
             }
         }
     }
@@ -485,7 +495,7 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
     // Make the node with the value of the arrayIndex
     LRUnode * node = calloc( 1, sizeof(LRUnode) );
     node->arrayIndex = arrayIndex;
-    printf("        Creating node at %i\n", arrayIndex);
+    // printf("        Creating node at %i\n", arrayIndex);
 
     // Empty LRU case
     if (LRU->first == NULL) {
@@ -499,7 +509,7 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
         LRU->first = node;
     }
     LRU->count++;
-    printf("        New count : %lu\n", LRU->count);
+    // printf("        New count : %lu\n", LRU->count);
     #ifdef PRINT
     // printf("   The size of the LRU is %lu \n",LRU->count);
     // printf("   The last item in the list's tag is %i\n",LRU->last->arrayIndex);
@@ -532,7 +542,7 @@ int LRUpop (LRU_inst* LRU) {
             LRU -> last -> next = NULL;
         }
         LRU->count--;
-        printf("        decrimented LRU counter : count %lu\n", LRU->count);
+        // printf("        decrimented LRU counter : count %lu\n", LRU->count);
     }
     return result;
 }

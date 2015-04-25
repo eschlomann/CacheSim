@@ -11,10 +11,17 @@ void stateMachine( struct reference* ref ) {
 
     // Define initial state
     struct state state;
-    state.next = QUERY_L1;
     state.type = ref->type;
     state.iteration = 0;
     state.addL2 = FALSE;
+
+    // Check instruction count
+    if( runResults.numInst % 380000 == 0 ) {
+        printf( "Flush \n" );
+        state.next = FLUSH;
+    } else {
+        state.next = QUERY_L1;
+    }
 
     // Define initial L1 reference
     decomposeAddress( ref, L1 );
@@ -75,6 +82,14 @@ void stateMachine( struct reference* ref ) {
                 printf( "Handle write case \n" );
                 #endif
                 handleWrite( &state, &L1_cache );
+                break;
+
+            case FLUSH:
+                // Flush and invalidate all caches
+                #ifdef PRINT
+                printf( "Flush \n" );
+                #endif
+                flushCaches( &state );
                 break;
 
             case TERMINATE:
@@ -300,13 +315,23 @@ void handleWrite( struct state* state, struct cache* cache) {
 /******************************************************************************************************
  * Flush the cache by invalidating all of the data
  ******************************************************************************************************/
-void flushCache( struct state* state, struct cache* cache ) {;
+void flushCaches( struct state* state ) {;
     
-    // Flush the given cache
-    flush( cache );
+    // Flush the L1_Instruction cache
+    flush( &L1_instruction );
+
+    // Flush the L1_Data cache
+    flush( &L1_data );
+
+    // Flush the L2_Unified cache
+    flush( &L2_unified );
+
+    // Increment results
+    runResults.flushes++;
+    runResults.invalidates++;
 
     // Transition
-    state->next = IDLE;
+    state->next = QUERY_L1;
     return;
 }
 

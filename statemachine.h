@@ -39,6 +39,12 @@
 
 
 /******************************************************************************************************
+ * Keep track of how many instructions have been executed
+ ******************************************************************************************************/
+int numInstructions;
+
+
+/******************************************************************************************************
  * Makes call to state machine
  ******************************************************************************************************/
 void stateMachine( struct reference* ref );
@@ -89,7 +95,7 @@ void handleWrite( struct state* state, struct cache* cache );
 /******************************************************************************************************
  * Flush the cache by invalidating all of the data
  ******************************************************************************************************/
-void flushCache( struct state* state, struct cache* cache );
+void flushCaches( struct state* state );
 
 
 #endif // STATEMACHINE_H
