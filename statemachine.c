@@ -309,7 +309,7 @@ void addL2( struct state* state ) {
  ******************************************************************************************************/
 void handleWrite( struct state* state, struct cache* cache) {
 
-    // Set the dirty bit of given cache
+    // Set the dirty bit of given cache (L1)
     setDirty( state->L1_Index, state->L1_Tag, cache );
 
     // Transition
@@ -330,7 +330,6 @@ void flushCaches( struct state* state ) {;
     flush( &L1_data );
 
     // Flush the L2_Unified cache
-    flush( &L2_unified );
     flush( &L2_unified );
 
     // Increment results
