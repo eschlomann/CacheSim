@@ -214,9 +214,6 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
             if( cache->type == L1 ) {
                 writeback( index, block.tags[tagIndex] );        
 
-                // Increment hit count for L2 since guaranteed to be in L2
-                // runResults.l2_hit++;
-
                 // Increment dirty kickout for L1 (assuming data cache)
                 if( cache->L1_Type == 'I' ) {
                     runResults.l1i_dirtyKickouts++;
@@ -364,6 +361,10 @@ void writeback( unsigned long long index, unsigned long long tag ) {
         runResults.l2_hit++;
     } else {
         runResults.l2_miss++;
+
+        // Need to add appropriate reference to L2 and mark dirty
+        addCache( ref.L2_Index, ref.L2_Tag, &L2_unified );
+        setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified );
     }
 
 }
