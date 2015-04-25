@@ -304,7 +304,7 @@ bool setDirty( unsigned long long index, unsigned long long tag, struct cache* c
                 block.dirty[i] = TRUE;
 
                 // Update LRU
-                // LRUpush ( block.LRU , i );
+                LRUpush ( block.LRU , i );
 
                 return TRUE;
             }
