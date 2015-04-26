@@ -14,6 +14,6 @@
 16 		L2_bus_width
 # Memory Parameters:
 10		mem_sendaddr
-50		mem_ready
+30		mem_ready
 15		mem_chunktime
-16 		mem_chunksize
+8 		mem_chunksize
