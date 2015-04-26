@@ -95,6 +95,7 @@ void stateMachine( struct reference* ref ) {
                 #ifdef PRINT
                 printf( "**********************************************************************************************\n" );
                 #endif
+                terminate( ref );
                 return;
         }
     }
@@ -332,3 +333,12 @@ void flushCaches( struct state* state ) {;
 }
 
 
+/******************************************************************************************************
+ * Frees memory used to hold references
+ ******************************************************************************************************/
+void terminate( struct reference* ref ) {
+
+    // Free reference and index
+    free( ref->index );
+    free( ref->tag );
+}

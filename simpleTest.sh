@@ -1,12 +1,12 @@
 #!/bin/bash
 
 # Define trace path
-# TRACE="traces/traces-short/tr1"
-TRACE="traces/traces-1M/sjeng.gz"
+TRACE="traces/traces-short/tr1"
+# TRACE="traces/traces-1M/sjeng.gz"
 
 # Define config
-# CONFIG="configs/Default"
-CONFIG="configs/All-2way"
+CONFIG="configs/Default"
+# CONFIG="configs/All-2way"
 
 make
 # Runs TR1 trace through simulation under default settings

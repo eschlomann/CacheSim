@@ -214,6 +214,9 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
             if( cache->type == L1 ) {
                 writeback( index, block.tags[tagIndex] );        
 
+                // Have to transfer block from L1 to L2
+                runResults.numWriteCycles += config.L1_transfer_cycles;
+
                 // Increment dirty kickout for L1 (assuming data cache)
                 if( cache->L1_Type == 'I' ) {
                     runResults.l1i_dirtyKickouts++;
