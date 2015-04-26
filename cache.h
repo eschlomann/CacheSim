@@ -127,7 +127,7 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType, char c );
 /******************************************************************************************************
  * Add given reference to the cache
  ******************************************************************************************************/
-void addCache( unsigned long long index, unsigned long long tag, struct cache* cache ); 
+void addCache( unsigned long long index, unsigned long long tag, struct cache* cache, char instructionType ); 
 
 
 /******************************************************************************************************
@@ -151,7 +151,7 @@ void constructL2Ref( struct L2_Reference* ref, unsigned long long index, unsigne
 /******************************************************************************************************
  * Writeback from L1 cache to L2 cache by setting corresponding data to dirty
  ******************************************************************************************************/
-void writeback( unsigned long long index, unsigned long long tag ); 
+void writeback( unsigned long long index, unsigned long long tag, char instructionType ); 
 
 
 /******************************************************************************************************

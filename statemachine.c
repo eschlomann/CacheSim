@@ -266,7 +266,7 @@ void queryL2( struct state* state ) {
 void addL1( struct state* state, struct cache* cache ) {
     
     // Add reference 
-    addCache( state->L1_Index, state->L1_Tag, cache ); 
+    addCache( state->L1_Index, state->L1_Tag, cache, state->type ); 
 
     // Transition
     state->next = QUERY_L2;
@@ -282,7 +282,7 @@ void addL2( struct state* state ) {
     
     // Add reference 
     struct cache* cache = &L2_unified;
-    addCache( state->L2_Index, state->L2_Tag, cache ); 
+    addCache( state->L2_Index, state->L2_Tag, cache, state->type ); 
 
     // Transition
     if( state->type == 'W' ) {

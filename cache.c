@@ -166,7 +166,7 @@ void constructCache( struct cache* cache, cache_TypeDef cacheType, char c ) {
 /******************************************************************************************************
  * Add given reference to the cache
  ******************************************************************************************************/
-void addCache( unsigned long long index, unsigned long long tag, struct cache* cache ) {
+void addCache( unsigned long long index, unsigned long long tag, struct cache* cache, char instructionType ) {
     // #define PRINT
 
     // Get associated block
@@ -212,10 +212,16 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
             
             // If L1 cache, need to writeback to L2 cache   
             if( cache->type == L1 ) {
-                writeback( index, block.tags[tagIndex] );        
+                writeback( index, block.tags[tagIndex], instructionType );        
 
                 // Have to transfer block from L1 to L2
-                runResults.numWriteCycles += config.L1_transfer_cycles;
+                if( instructionType == 'R' ) {
+                    runResults.numReadCycles += config.L1_transfer_cycles;
+                } else if( instructionType == 'W' ) {
+                    runResults.numWriteCycles += config.L1_transfer_cycles;
+                } else {
+                    // Do nothing
+                }
 
                 // Increment dirty kickout for L1 (assuming data cache)
                 if( cache->L1_Type == 'I' ) {
@@ -229,6 +235,14 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
                 // Increment dirty kickout for L2
                 runResults.l2_dirtyKickouts++;
 
+                // Have to transfer block from L1 to L2
+                if( instructionType == 'R' ) {
+                    runResults.numReadCycles += config.L2_transfer_cycles;
+                } else if( instructionType == 'W' ) {
+                    runResults.numWriteCycles += config.L2_transfer_cycles;
+                } else {
+                    // Do nothing
+                }
             }
         }
         
@@ -350,7 +364,7 @@ void constructL2Ref( struct L2_Reference* ref, unsigned long long index, unsigne
 /******************************************************************************************************
  * Writeback from L1 cache to L2 cache by setting corresponding data to dirty
  ******************************************************************************************************/
-void writeback( unsigned long long index, unsigned long long tag ) { 
+void writeback( unsigned long long index, unsigned long long tag, char instructionType ) { 
     // #define PRINT
     
     // Make L2_Reference struct
@@ -362,12 +376,30 @@ void writeback( unsigned long long index, unsigned long long tag ) {
     // Set constructed block to dirty
     if( setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified ) ) {
         runResults.l2_hit++;
+
+        // Add hit time
+        if( instructionType == 'R' ) {
+            runResults.numReadCycles += config.L2_hit_time;
+        } else if( instructionType == 'W' ) {
+            runResults.numWriteCycles += config.L2_hit_time;
+        } else {
+            // Do nothing
+        }
     } else {
         runResults.l2_miss++;
 
         // Need to add appropriate reference to L2 and mark dirty
-        addCache( ref.L2_Index, ref.L2_Tag, &L2_unified );
+        addCache( ref.L2_Index, ref.L2_Tag, &L2_unified, 'W' );
         setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified );
+
+        // Add miss time
+        if( instructionType == 'R' ) {
+            runResults.numReadCycles += config.L2_miss_time;
+        } else if( instructionType == 'W' ) {
+            runResults.numWriteCycles += config.L2_miss_time;
+        } else {
+            // Do nothing   
+        }
     }
 }
 
@@ -396,7 +428,7 @@ void flush( struct cache* cache ) {
                     block.dirty[j] = FALSE;
                     
                     if( cache->type == L1 ) {
-                        writeback( i, block.tags[j] );        
+                        writeback( i, block.tags[j], ' ' );        
     
                         // Increment hit count for L2 since guaranteed to be in L2
                         // runResults.l2_hit++;
