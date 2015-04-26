@@ -95,7 +95,7 @@ int printResults ( char* resultsFile ) {
 	);
 	//Need more here, cost calculations + memory cost
 	int l1_cost = 2 * (100 * (config.L1_cache_size/4096) + 100 * (log(config.L1_assoc) / log(2)) * (config.L1_cache_size/4096));
-    int l2_cost = (int)(50 * ((float) config.L2_cache_size/32768) + 50 * (log(config.L2_assoc) / log(2)) * ((float)config.L2_block_size/65536));
+    int l2_cost = (50 * (config.L2_cache_size/32768) + 50 * (log(config.L2_assoc) / log(2)) * (config.L2_cache_size/32768));
     int mem_cost = 50 + 200 * (log ( 50 / config.mem_ready )) / log(2) + 25 + 100 * (log (config.mem_chunksize/16)) / log(2);
 	fprintf(fp, "\n\nL1 cache cost (Icache $%i) + (Dcache $%i) = $%i\nL2 cache cost = $%i;  Memory cost = $%i; Total cost = $%i\nFlushes = %llu  :  Invalidates = %llu", 
 		l1_cost / 2,
