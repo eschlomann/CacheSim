@@ -363,11 +363,9 @@ void writeback( unsigned long long index, unsigned long long tag ) {
         runResults.l2_miss++;
 
         // Need to add appropriate reference to L2 and mark dirty
-        // addCache( ref.L2_Index, ref.L2_Tag, &L2_unified );
-        // setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified );
+        addCache( ref.L2_Index, ref.L2_Tag, &L2_unified );
+        setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified );
     }
-    addCache( ref.L2_Index, ref.L2_Tag, &L2_unified );
-    setDirty( ref.L2_Index, ref.L2_Tag, &L2_unified );
 }
 
 
