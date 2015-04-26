@@ -196,14 +196,14 @@ void queryL1( struct state* state, struct cache* cache ) {
     else {
         if (state->type == 'I') {
             runResults.l1i_miss++;
-            runResults.numInstCycles += config.L1_miss_time;
+            runResults.numInstCycles += config.L1_miss_time + config.L1_hit_time + config.L1_transfer_cycles;
 
         } else if (state->type == 'W') {
             runResults.l1d_miss++;
-            runResults.numWriteCycles += config.L1_miss_time;
+            runResults.numWriteCycles += config.L1_miss_time + config.L1_hit_time + config.L1_transfer_cycles;
         } else {
             runResults.l1d_miss++;
-            runResults.numReadCycles += config.L1_miss_time;
+            runResults.numReadCycles += config.L1_miss_time + config.L1_hit_time + config.L1_transfer_cycles;
         }
         // state->next = QUERY_L2;
         state->next = ADD_L1;
@@ -231,13 +231,27 @@ void queryL2( struct state* state ) {
     // Transition based on result
     if( (hit == TRUE) && (state->type == 'W') ) {
         runResults.l2_hit++;
+        runResults.numWriteCycles += config.L2_hit_time;
         state->next = HANDLE_WRITE;
         return;
     } else if( hit == TRUE ) {
+        if ( state->type == 'R') {
+            runResults.numReadCycles += config.L2_hit_time;
+        } else {
+            runResults.numInstCycles += config.L2_hit_time;
+        }
         runResults.l2_hit++;
         state->next = IDLE;
         return;
     } else {
+        if ( state->type == 'R') {
+            runResults.numReadCycles += config.L2_miss_time + config.L2_hit_time + config.L2_transfer_cycles;
+        } else if ( state->type == 'W') {
+            runResults.numWriteCycles += config.L2_miss_time + config.L2_hit_time + config.L2_transfer_cycles;
+        } else {
+            runResults.numInstCycles += config.L2_miss_time + config.L2_hit_time + config.L2_transfer_cycles;
+        }
+
         runResults.l2_miss++;
         state->next = ADD_L2;
         return;
