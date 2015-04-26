@@ -28,7 +28,7 @@ int printResults ( char* resultsFile ) {
 		runResults.numInst,
 		runResults.numReads + runResults.numWrites
 	);
-	fprintf(fp,"\n\nNumber of Reference Types: [Percentage]\n  Reads  = %11llu   [%4.1f%%]\n  Writes = %11llu   [%4.1f%%]\n  Inst.  = %11llu   [%4.1f%%]\n  Total  = %11llu",
+	fprintf(fp,"\n\nNumber of Reference Types: [Percentage]\n  Reads  = %14llu   [%4.1f%%]\n  Writes = %14llu   [%4.1f%%]\n  Inst.  = %14llu   [%4.1f%%]\n  Total  = %14llu",
 		runResults.numReads,
 		((float)runResults.numReads / (float)totalRef)*100,
 		runResults.numWrites,
@@ -37,7 +37,7 @@ int printResults ( char* resultsFile ) {
 		((float)runResults.numInst / (float)totalRef)*100,
 		totalRef
 	);
-	fprintf(fp,"\n\nTotal cycles for activities: [Percentage]\n  Reads  = %11llu   [%4.1f%%]\n  Writes = %11llu   [%4.1f%%]\n  Inst.  = %11llu   [%4.1f%%]\n  Total  = %11llu",
+	fprintf(fp,"\n\nTotal cycles for activities: [Percentage]\n  Reads  = %14llu   [%4.1f%%]\n  Writes = %14llu   [%4.1f%%]\n  Inst.  = %14llu   [%4.1f%%]\n  Total  = %14llu",
 		runResults.numReadCycles,
 		((float)runResults.numReadCycles / (float)totalCycle)*100,
 		runResults.numWriteCycles,
