@@ -97,4 +97,10 @@ void handleWrite( struct state* state, struct cache* cache );
 void flushCaches( struct state* state );
 
 
+/******************************************************************************************************
+ * Frees memory used to hold references
+ ******************************************************************************************************/
+void terminate( struct reference* ref ); 
+
+
 #endif // STATEMACHINE_H
