@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define trace path
-TRACE="traces/traces-short/tr6"
-# TRACE="traces/traces-1M/sjeng.gz"
+# TRACE="traces/traces-short/tr6"
+TRACE="traces/traces-1M/sjeng.gz"
 
 # Define config
 CONFIG="configs/Default"
