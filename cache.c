@@ -222,7 +222,7 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
                 } else if( instructionType == 'F' ) {
                     runResults.flushTime += config.L2_transfer_cycles;
                 } else {
-                    // Do nothing
+                    runResults.numInstCycles += config.L2_transfer_cycles;
                 }
 
                 // Increment dirty kickout for L1 (assuming data cache)
@@ -245,7 +245,7 @@ void addCache( unsigned long long index, unsigned long long tag, struct cache* c
                 } else if( instructionType == 'F' ) {
                     runResults.flushTime += config.L2_transfer_cycles;
                 } else {
-                    // Do nothing
+                    runResults.numInstCycles += config.L2_transfer_cycles;
                 }
             }
         }
