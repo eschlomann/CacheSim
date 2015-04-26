@@ -377,28 +377,21 @@ void flush( struct cache* cache ) {
     
     // Calculate number of blocks in the cache
     int numBlocks = CACHE_SIZE[cache->type] / BLOCK_SIZE[cache->type];
-    printf( "***************************************************************************************** \n" );
-    printf( "cache->type: %d \n", cache->type );
-    printf( "numBlocks: %d \n", numBlocks );
 
     // Get associativity
     int associativity = ASSOC[cache->type];
 
     // Iterate through each cacheBlock
     int i, j;
-    int numValid = 0;
-    int numDirty = 0;
     struct cacheBlock block;
     for( i = 0; i < numBlocks; i++ ) {
         block = cache->block[i];
         for( j = 0; j < associativity; j++ ) {
             if( block.valid[j] == TRUE ) {
-                numValid++;
             
                 // If dirty, handle writeback
                 if( block.dirty[j] == TRUE ) {
                     block.dirty[j] = FALSE;
-                    numDirty++;
                     
                     if( cache->type == L1 ) {
                         writeback( i, block.tags[j] );        
@@ -428,8 +421,6 @@ void flush( struct cache* cache ) {
             }
         }
     }
-    printf( "numValid: %d \n", numValid );
-    printf( "numDirty: %d \n", numDirty );
 }
 
 
