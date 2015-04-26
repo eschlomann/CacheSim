@@ -30,7 +30,7 @@ typedef struct LRUnode {
  ******************************************************************************************************/
 typedef struct LRU_inst {
     cache_TypeDef type;
-    unsigned long count;
+    int count;
     LRUnode* first;
     LRUnode* last;
 } LRU_inst;

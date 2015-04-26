@@ -36,9 +36,6 @@ int main( int argc, char** argv ) {
 	} else {
 		printResults( argv[2] );
 	}
-	
-	int numBlocksL1 = CACHE_SIZE[L1] / BLOCK_SIZE[L1];
-	int numBlocksL2 = CACHE_SIZE[L2] / BLOCK_SIZE[L2];
 
     return 1;
 }
