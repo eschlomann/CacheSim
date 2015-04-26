@@ -18,9 +18,10 @@ int printResults ( char* resultsFile ) {
 		runResults.m_config.mem_chunksize,
 		runResults.m_config.mem_chunktime
 	);
+	unsigned long long totalCycle = runResults.numReadCycles + runResults.numWriteCycles + runResults.numInstCycles;
 	unsigned long long totalRef = runResults.numReads + runResults.numWrites + runResults.numInst;
 	fprintf(fp,"\n\nExecute time = %llu; Total refs = %llu\nFlush time = %llu\nInst refs = %llu; Data refs = %llu",
-		runResults.exTime,
+		totalCycle,
 		totalRef,
 		runResults.flushTime,
 		runResults.numInst,
@@ -35,7 +36,6 @@ int printResults ( char* resultsFile ) {
 		((float)runResults.numInst / (float)totalRef)*100,
 		totalRef
 	);
-	unsigned long long totalCycle = runResults.numReadCycles + runResults.numWriteCycles + runResults.numInstCycles;
 	fprintf(fp,"\n\nTotal cycles for activities: [Percentage]\n  Reads  = %11llu   [%4.1f%%]\n  Writes = %11llu   [%4.1f%%]\n  Inst.  = %11llu   [%4.1f%%]\n  Total  = %11llu",
 		runResults.numReadCycles,
 		((float)runResults.numReadCycles / (float)totalCycle)*100,
