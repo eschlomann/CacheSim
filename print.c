@@ -18,6 +18,7 @@ int printResults ( char* resultsFile ) {
 		runResults.m_config.mem_chunksize,
 		runResults.m_config.mem_chunktime
 	);
+	runResults.numInstCycles += runResults.flushTime;
 	unsigned long long totalCycle = runResults.numReadCycles + runResults.numWriteCycles + runResults.numInstCycles;
 	unsigned long long totalRef = runResults.numReads + runResults.numWrites + runResults.numInst;
 	fprintf(fp,"\n\nExecute time = %llu; Total refs = %llu\nFlush time = %llu\nInst refs = %llu; Data refs = %llu",
