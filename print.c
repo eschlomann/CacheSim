@@ -66,7 +66,7 @@ int printResults ( char* resultsFile ) {
 		((float)runResults.l1i_miss/(float)l1i_total)*100,
 		runResults.l1i_kickouts,
 		runResults.l1i_dirtyKickouts,
-		runResults.l1i_transfers,
+		runResults.l1i_miss + runResults.l1i_flushKickouts,
 		runResults.l1i_flushKickouts
 	);
 	unsigned long long l1d_total = runResults.l1d_hit + runResults.l1d_miss;
@@ -78,7 +78,7 @@ int printResults ( char* resultsFile ) {
 		((float)runResults.l1d_miss/(float)l1d_total)*100,
 		runResults.l1d_kickouts,
 		runResults.l1d_dirtyKickouts,
-		runResults.l1d_transfers,
+		runResults.l1d_miss + runResults.l1d_flushKickouts,
 		runResults.l1d_flushKickouts
 	);
 	unsigned long long l2_total = runResults.l2_hit + runResults.l2_miss;
@@ -90,7 +90,7 @@ int printResults ( char* resultsFile ) {
 		((float)runResults.l2_miss/(float)l2_total)*100,
 		runResults.l2_kickouts,
 		runResults.l2_dirtyKickouts,
-		runResults.l2_transfers,
+		runResults.l2_miss + runResults.l2_flushKickouts,
 		runResults.l2_flushKickouts
 	);
 	//Need more here, cost calculations + memory cost

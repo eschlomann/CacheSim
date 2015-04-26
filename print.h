@@ -39,7 +39,6 @@ struct results {
 	float l1i_missRate;
 	unsigned long long l1i_kickouts;
 	unsigned long long l1i_dirtyKickouts;
-	unsigned long long l1i_transfers;
 	unsigned long long l1i_flushKickouts;
 	unsigned long long l1d_hit;
 	unsigned long long l1d_miss;
@@ -48,7 +47,6 @@ struct results {
 	float l1d_missRate;
 	unsigned long long l1d_kickouts;
 	unsigned long long l1d_dirtyKickouts;
-	unsigned long long l1d_transfers;
 	unsigned long long l1d_flushKickouts;
 	unsigned long long l2_hit;
 	unsigned long long l2_miss;
@@ -57,7 +55,6 @@ struct results {
 	float l2_missRate;
 	unsigned long long l2_kickouts;
 	unsigned long long l2_dirtyKickouts;
-	unsigned long long l2_transfers;
 	unsigned long long l2_flushKickouts;
 	unsigned int l1_cost;
 	unsigned int l2_cost;

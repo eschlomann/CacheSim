@@ -197,6 +197,7 @@ void queryL1( struct state* state, struct cache* cache ) {
         if (state->type == 'I') {
             runResults.l1i_miss++;
             runResults.numInstCycles += config.L1_miss_time;
+
         } else if (state->type == 'W') {
             runResults.l1d_miss++;
             runResults.numWriteCycles += config.L1_miss_time;

@@ -76,6 +76,9 @@ int configParse( char* configFile ) {
     defineAddressParameters( 0 );
     defineAddressParameters( 1 );
 
+    config.L1_transfer_cycles = config.L2_transfer_time * (config.L1_block_size/L2_bus_width);
+    config.L2_transfer_cycles = mem_sendaddr + mem_ready + mem_chunktime * (L2_block_size/mem_chunksize);
+
 	return 0;
 }
 

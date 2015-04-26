@@ -55,6 +55,9 @@ struct configuration {
 	int mem_ready;
 	int mem_chunktime;
 	int mem_chunksize;
+	// Calculated Parameters
+	int L1_transfer_cycles;
+	int L2_transfer_cycles;
 };
 
 struct configuration config;
