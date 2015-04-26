@@ -14,7 +14,6 @@ int main( int argc, char** argv ) {
     constructCache( &L1_data , L1, 'D' );
     constructCache( &L2_unified , L2, '2' );
 
-
 	while( scanf ("%c %llx %d\n",&ref.type,&ref.address,&ref.numBytes) == 3) {
 		// printf("\n%c %llx %d\n\n",ref.type,ref.address,ref.numBytes);
        

@@ -515,11 +515,13 @@ void LRUpush (LRU_inst* LRU, int arrayIndex) {
                     LRU->count--;
                     // printf("        LRU count decrimented : count %lu\n", LRU->count);
                 } else {
-                    free(parser -> prev -> next);
+                    // free(parser -> prev -> next);
                     parser -> prev -> next = parser -> next;
+                    // parser->next->prev = parser->prev;
                     if (parser -> next != NULL) {
                         parser -> next -> prev = parser -> prev;   
                     }
+                    free( parser );
                     LRU->count--;
                     // printf("        LRU count decrimented : count %lu\n", LRU->count);
                 }
@@ -579,6 +581,8 @@ int LRUpop (LRU_inst* LRU) {
             result = 0;
         } else {
             // more than one item, really is only called when items = associativity
+            // printf( "   In else \n" );
+            // printf( "   Count: %d \n", LRU->count );
             result = LRU -> last -> arrayIndex;
             LRU -> last = LRU -> last -> prev;
             free ( LRU -> last -> next );
