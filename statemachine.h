@@ -30,7 +30,6 @@
     int next;                               // Transition to this state 
     int iteration;                          // Index of the current reference
     char type;                              // Type of instruction
-    bool addL2;                             // Indicate if should transition to ADD_L2 state
     unsigned long long L1_Tag;              // L1 tag to access
     unsigned long long L1_Index;            // L1 index to access
     unsigned long long L2_Tag;              // L2 tag of access

@@ -13,7 +13,6 @@ void stateMachine( struct reference* ref ) {
     struct state state;
     state.type = ref->type;
     state.iteration = 0;
-    state.addL2 = FALSE;
 
     // Check instruction count
     if( setFlush == TRUE ) {
@@ -162,9 +161,6 @@ void incrementL1( struct state* state, struct reference* ref ) {
     state->L1_Index = ref->index[ state->iteration ];
     state->L1_Tag = ref->tag[ state->iteration ];
 
-    // Make sure add L2 is false
-    state->addL2 = FALSE;
-
     // Transition back start of statemachine
     state->next = QUERY_L1;
     return;
@@ -208,7 +204,8 @@ void queryL1( struct state* state, struct cache* cache ) {
             runResults.l1d_miss++;
             runResults.numReadCycles += config.L1_miss_time;
         }
-        state->next = QUERY_L2;
+        // state->next = QUERY_L2;
+        state->next = ADD_L1;
         return;
     }
 }
@@ -231,32 +228,17 @@ void queryL2( struct state* state ) {
     bool hit = queryCache( L2_Ref.L2_Index, L2_Ref.L2_Tag, &L2_unified );
 
     // Transition based on result
-    // int trasftertime;
-    if( hit == TRUE ) {
-        // trasftertime = config.L2_transfer_time * ceil( (float)ref->numBytes / config.L2_bus_width );
-        if (state->type == 'I') {
-            // runResults.numInstCycles += config.L2_hit_time + trasftertime;
-        } else if (state->type == 'W') {
-            // runResults.numWriteCycles += config.L2_hit_time + trasftertime;
-        } else {
-            // runResults.numReadCycles += config.L2_hit_time + trasftertime; 
-        }
+    if( (hit == TRUE) && (state->type == 'W') ) {
         runResults.l2_hit++;
-        state->next = ADD_L1;
+        state->next = HANDLE_WRITE;
+        return;
+    } else if( hit == TRUE ) {
+        runResults.l2_hit++;
+        state->next = IDLE;
         return;
     } else {
-        // trasftertime = config.mem_sendaddr + config.mem_ready + (config.mem_chunktime * ceil( (float)ref->numBytes / config.mem_chunksize ));
-        if (state->type == 'I') {
-            // runResults.numInstCycles += config.L2_miss_time + trasftertime;
-        } else if (state->type == 'W') {
-            // runResults.numWriteCycles += config.L2_miss_time + trasftertime;
-        } else {
-            // runResults.numReadCycles += config.L2_miss_time + trasftertime;
-        }
         runResults.l2_miss++;
-        // Indicate that should add L2
-        state->addL2 = TRUE;
-        state->next = ADD_L1;
+        state->next = ADD_L2;
         return;
     }
 }
@@ -271,16 +253,9 @@ void addL1( struct state* state, struct cache* cache ) {
     addCache( state->L1_Index, state->L1_Tag, cache ); 
 
     // Transition
-    if( state->addL2 == TRUE ) {
-        state->next = ADD_L2;
-        return;
-    } else if( state->type == 'W' ) {
-        state->next = HANDLE_WRITE;
-        return;
-    } else {
-        state->next = IDLE;
-        return;
-    }
+    state->next = QUERY_L2;
+    return;
+
 }
 
 
