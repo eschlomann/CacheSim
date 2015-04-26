@@ -48,16 +48,19 @@ int printResults ( char* resultsFile ) {
 	fprintf(fp,"\n\nAverage cycles per activity\n  Read = %.1f; Write = %.1f; Inst. = %.1f",
 		(float)runResults.numReadCycles / (float)runResults.numReads,
 		(float)runResults.numWriteCycles / (float)runResults.numWrites,
-		(float)runResults.numInstCycles / (float)runResults.numInst
+		(float)totalCycle / (float)runResults.numInst
 	);
-	//NO idea what these guys are
-	fprintf(fp, "\nIdeal: Exec. Time = %i; CPI = %.1f\nIdeal mis-aligned: Exec. Time = %i; CPI = %.1f", 
-		1,
-		0.0,
-		1,
-		0.0
-	);
+	
 	unsigned long long l1i_total = runResults.l1i_hit + runResults.l1i_miss;
+	unsigned long long l1d_total = runResults.l1d_hit + runResults.l1d_miss;
+
+	fprintf(fp, "\nIdeal: Exec. Time = %llu; CPI = %.1f\nIdeal mis-aligned: Exec. Time = %llu; CPI = %.1f", 
+		totalRef + runResults.numInst,
+		(float)(totalRef + runResults.numInst)/(float)runResults.numInst,
+		l1i_total + l1d_total + runResults.numInst,
+		(float)(l1i_total + l1d_total + runResults.numInst)/(float)runResults.numInst
+	);
+	
 	fprintf(fp, "\n\nMemory Level:  L1i\n  Hit Count = %llu  Miss Count = %llu\n  Total Requests = %llu\n  Hit Rate = %4.1f%%  Miss Rate = %4.1f%%\n  Kickouts = %llu;  Dirty Kickouts = %llu;  Transfers = %llu\n  Flush Kickouts = %llu", 
 		runResults.l1i_hit,
 		runResults.l1i_miss,
@@ -69,7 +72,7 @@ int printResults ( char* resultsFile ) {
 		runResults.l1i_miss + runResults.l1i_flushKickouts,
 		runResults.l1i_flushKickouts
 	);
-	unsigned long long l1d_total = runResults.l1d_hit + runResults.l1d_miss;
+	
 	fprintf(fp, "\n\nMemory Level:  L1d\n  Hit Count = %llu  Miss Count = %llu\n  Total Requests = %llu\n  Hit Rate = %4.1f%%  Miss Rate = %4.1f%%\n  Kickouts = %llu;  Dirty Kickouts = %llu;  Transfers = %llu\n  Flush Kickouts = %llu", 
 		runResults.l1d_hit,
 		runResults.l1d_miss,
@@ -96,7 +99,7 @@ int printResults ( char* resultsFile ) {
 	//Need more here, cost calculations + memory cost
 	int l1_cost = 2 * (100 * (config.L1_cache_size/4096) + 100 * (log(config.L1_assoc) / log(2)) * (config.L1_cache_size/4096));
     int l2_cost = (50 * (config.L2_cache_size/32768) + 50 * (log(config.L2_assoc) / log(2)) * (config.L2_cache_size/32768));
-    int mem_cost = 50 + 200 * (log ( 50 / config.mem_ready )) / log(2) + 25 + 100 * (log (config.mem_chunksize/16)) / log(2);
+    int mem_cost = 50 + 200 * (log ( 30 / config.mem_ready )) / log(2) + 25 + 100 * (log (config.mem_chunksize/8)) / log(2);
 	fprintf(fp, "\n\nL1 cache cost (Icache $%i) + (Dcache $%i) = $%i\nL2 cache cost = $%i;  Memory cost = $%i; Total cost = $%i\nFlushes = %llu  :  Invalidates = %llu", 
 		l1_cost / 2,
 		l1_cost / 2,
