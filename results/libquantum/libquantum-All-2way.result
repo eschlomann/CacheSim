@@ -13,16 +13,16 @@ Flush time = 1267131606
 Inst refs = 12487578510; Data refs = 4018914036
 
 Number of Reference Types: [Percentage]
-  Reads  =  3526260463   [21.4%]
-  Writes =   492653573   [ 3.0%]
-  Inst.  = 12487578510   [75.7%]
-  Total  = 16506492546
+  Reads  =     3526260463   [21.4%]
+  Writes =      492653573   [ 3.0%]
+  Inst.  =    12487578510   [75.7%]
+  Total  =    16506492546
 
 Total cycles for activities: [Percentage]
-  Reads  = 86764716341   [81.9%]
-  Writes =  1197968976   [ 1.1%]
-  Inst.  = 18030861062   [17.0%]
-  Total  = 105993546379
+  Reads  =    86764716341   [81.9%]
+  Writes =     1197968976   [ 1.1%]
+  Inst.  =    18030861062   [17.0%]
+  Total  =   105993546379
 
 Average cycles per activity
   Read = 24.6; Write = 2.4; Inst. = 8.5

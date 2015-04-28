@@ -7,10 +7,10 @@ OBJ = cache.o configparse.o main.o print.o statemachine.o
 LIBS = -lm
 
 %.o: %.c $(DEPS)
-	$(CC) -O -Wall -Wextra -c -o $@ $< $(CFLAGS)
+	$(CC) -O3 -Wall -Wextra -c -o $@ $< $(CFLAGS)
 
 cacheSim.exe: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+	$(CC) -O3 -o $@ $^ $(CFLAGS) $(LIBS)
 
 clean:
 	rm -f *.o
