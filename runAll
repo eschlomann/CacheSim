@@ -10,8 +10,8 @@ if [ "$1" == "Parker" ]
 		CATARGS="zcat"
 fi
 
-TRACES="traces/traces-long/*"
-CONFIGS="configs/*"
+TRACES="traces/traces-long/h264ref.gz"
+CONFIGS="configs/All-2way"
 
 for trace in $TRACES
 do
