@@ -1,0 +1,49 @@
+\documentclass[12pt]{article}
+\usepackage{setspace}
+\usepackage{hyperref}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fullpage}
+\usepackage{amsmath}
+\usepackage{amssymb,amsfonts}
+\usepackage[all,arc]{xy}
+\usepackage{enumerate}
+\usepackage{mathrsfs}
+\usepackage{bbm}
+\usepackage{graphicx}
+\usepackage{subfiles}
+\usepackage{setspace}
+\usepackage{float}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{verbatim}
+\usepackage[margin=0.5in]{geometry}
+\setlength{\footskip}{-10pt}
+
+\lstset{frame=tb,
+  language=C,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\begin{document}
+\input{./title.tex}
+\vfill
+\pagebreak
+
+\subfile{Results}
+
+\subfile{Code}
+
+\end{document}
