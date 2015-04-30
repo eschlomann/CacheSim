@@ -13,7 +13,7 @@ The first valuable metric is a comparison of the execution times between the dif
 
 In this figure the columns of the bar chart are organized first by the configuration run, then the trace. Excepting the libquantum trace, the traces follow a regular pattern. The execution times go from smallest with the All-FA-L2Big configuration to the largest execution time L1-small. The amount of variation for different traces also differs greatly. Libquantum and bzip2 have a relatively small amount of variation between different configs, while omnetpp varies wildly. This behavior is likely due to the types of instructions contined within the trace. The omnetpp trace, for example, gains large benifits from increasing the associativity of both the L1 and L2 cache, as well as benefit from increasing the size of the L2 cache. The libquantum trace acts in a different fashion, not seeming to gain benefit from any sort of modifications made to the cache structure. Though libquatum was the smallest trace size at 4.2GB, it took the most cycles to run in 9 of the 11 configurations this is likely due to its hit rate which will be discussed later in this section.
 
-\smallspace
+\smallskip
 
 The next five images show comparisons of the hit rates for the L1 caches and the L2 cache for each of the different configurations with each of the five traces. This data sheds light on the results in the previous section.
 
@@ -22,6 +22,8 @@ The next five images show comparisons of the hit rates for the L1 caches and the
 The hit rate results are different for the bzip2 trace as they have by far the lowest L2 cache hit rate at every configuration. The L1 instruction hit rate is near 100\% while the L2 data hit rate hovers at around 93\%. These relatively good hit rates keep the run time on the low side, but the under 50\% L2 hit rate takes a toll on overall performance.
 
 \hspace{-.9cm}\includegraphics{hitRate_h264ref.png}
+
+The h264ref trace had the best performace out of any trace at each of the different configurations. This makes some sense as it is the second smallest trace at 4.7GB, and therefore has fewer total references than the bigger traces. Only the libquantum traces is smaller, and it has other performance issues. The hit rate for the L1 instruction cache is near 100\% for each of the configurations. The L1 data cache also consitently performes better than the rest of the traces. the h264ref trace additionally has a relatively good L2 hit rate whcih increases dramatically when the L2 cache is fully associative.
 
 \hspace{-.9cm}\includegraphics{hitrate_libquantum.png}
 
@@ -32,6 +34,10 @@ The hit rate results are different for the bzip2 trace as they have by far the l
 \hspace{-.9cm}\includegraphics{chunksizeExecution.png}
 
 \hspace{-.9cm}\includegraphics{chunksizeExecutionVsCost.png}
+
+\hspace{-.9cm}\includegraphics{costVsConfiguration.png}
+
+\hspace{.9cm}\includegraphics{cyclesVsCost.png}
 
 
 \end{document}
