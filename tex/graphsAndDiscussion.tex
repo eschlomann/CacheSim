@@ -9,8 +9,6 @@ The first valuable metric is a comparison of the execution times between the dif
 
 \hspace{-.9cm}\includegraphics{executionTime.png}
 
-\pagebreak
-
 In this figure the columns of the bar chart are organized first by the configuration run, then the trace. Excepting the libquantum trace, the traces follow a regular pattern. The execution times go from smallest with the All-FA-L2Big configuration to the largest execution time L1-small. The amount of variation for different traces also differs greatly. Libquantum and bzip2 have a relatively small amount of variation between different configs, while omnetpp varies wildly. This behavior is likely due to the types of instructions contined within the trace. The omnetpp trace, for example, gains large benifits from increasing the associativity of both the L1 and L2 cache, as well as benefit from increasing the size of the L2 cache. The libquantum trace acts in a different fashion, not seeming to gain benefit from any sort of modifications made to the cache structure. Though libquatum was the smallest trace size at 4.2GB, it took the most cycles to run in 9 of the 11 configurations this is likely due to its hit rate which will be discussed later in this section.
 
 \smallskip
@@ -60,5 +58,18 @@ This figure clearly shows that making caches fully associative is incredibly exp
 \hspace{.9cm}\includegraphics{cyclesVsCost.png}
 
 The plot in this image is a good place to start for choosing an optimal configuration. The trace used in this image is the omnetpp trace. It was chosen because it showed the greatest desparity in execution time for the different configurations, for this reason it highights the best choice in this scenario. The point with the lowest distance from the origin would be the most efficient implementation for the cost. In this case that point represents the L2-Big configuration.
+
+\smallskip
+
+The final two figures expand on the idea in the previous sectino in order to come to a conclusion about which configuration is more efficient on the whole. The total cycles are averaged for each configuration.
+
+\hspace{-.9cm}\includegraphics{averageCyclesVsCost.png}
+
+This figure shows a similar image to the scatter plot used for the omnetpp trace. This time the figure includes every trace. None the less it looks very similar. This is due to all of the traces following similar patterns in execution time for the different traces. Again the L2-Big configuration is closest to the origin, meaning that it is the most effieicnt configuration for the traces at hand.
+
+\hspace{.9cm}\includegraphics{averageCyclesPerDollar.png}
+
+This chart quantifies the optimization by plotting cycles vs cost. This plot is better for showing cost constraints. if the budget for the system is very very low, the L1-small trace does a good job of using each dollar very efficiently. The fully associtive traces on the other hand get very few cycles per dollar.
+
 
 \end{document}
